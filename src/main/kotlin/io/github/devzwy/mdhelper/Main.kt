@@ -6,7 +6,7 @@ import io.github.devzwy.mdhelper.data.MDRow
 
 fun main() {
     MDHelper.Builder().baseUrl("xxx").httpTimeOut(5 * 1000)
-        .addConfig("test1", "", "", "").build(false)
+        .addConfig("test1",  "", "").build(false)
         .apply {
             println("开始测试函数...")
 //            println("获取应用信息...")

@@ -79,7 +79,7 @@ data class RowData(
     //字段ID
     val controlId: String,
     //字段值
-    val value: Any
+    val value: Any?
 )
 
 class FilterBean private constructor(val controlId: String, val value: String, val dataType: Int, val spliceType: Int, val filterType: Int) {

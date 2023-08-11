@@ -38,9 +38,9 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
         /**
          * 添加一个操作应用数据
          */
-        fun addConfig(appName: String, appKey: String, secretKey: String, sign: String) = apply {
+        fun addConfig(appName: String, appKey: String, sign: String) = apply {
             if (!appExists(appName)) {
-                this.configList.add(MDConfig(appName, appKey, secretKey, sign))
+                this.configList.add(MDConfig(appName, appKey, sign))
                 loggerFactory?.log("配置添加完成：${this.configList.last()}")
             }
         }
@@ -151,13 +151,19 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * [data] 写入的列数据
      * @return 成功时返回写入记录的行ID 否则为空
      */
-    fun insertRow(appName: String? = null, worksheetId: String, triggerWorkflow: Boolean? = null, vararg data: RowData): String? {
+    fun insertRow(appName: String? = null, worksheetId: String, triggerWorkflow: Boolean? = null, data:HashMap<String,Any?>): String? {
         if (data.isEmpty() || worksheetId.isEmpty()) return null
+
+        val ls = arrayListOf<RowData>()
+        data.forEach { t, u ->
+            ls.add(RowData(t,u))
+        }
+
         return HttpUtil.sendPost(
             "/api/v2/open/worksheet/addRow".getRequestUrl(), hashMapOf<String, Any?>(
                 "worksheetId" to worksheetId,
                 "triggerWorkflow" to triggerWorkflow,
-                "controls" to data
+                "controls" to ls
             ).buildRequestJsonParams(appName)
         ).parseResp<String>()
     }
@@ -189,14 +195,20 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * [rowId] 更新的行记录ID
      * @return 成功时返回true，否则返回null
      */
-    fun updateRow(appName: String? = null, worksheetId: String, rowId: String, triggerWorkflow: Boolean? = null, vararg data: RowData): Boolean? {
+    fun updateRow(appName: String? = null, worksheetId: String, rowId: String, triggerWorkflow: Boolean? = null,  data: HashMap<String,Any?>): Boolean? {
         if (data.isEmpty() || worksheetId.isEmpty() || rowId.isEmpty()) return null
+
+        val ls = arrayListOf<RowData>()
+        data.forEach { t, u ->
+            ls.add(RowData(t,u))
+        }
+
         return HttpUtil.sendPost(
             "/api/v2/open/worksheet/editRow".getRequestUrl(), hashMapOf<String, Any?>(
                 "worksheetId" to worksheetId,
                 "triggerWorkflow" to triggerWorkflow,
                 "rowId" to rowId,
-                "controls" to data
+                "controls" to ls
             ).buildRequestJsonParams(appName)
         ).parseResp<Boolean>()
     }
@@ -284,7 +296,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * [secretKey] 应用的SecretKey
      * [sign] 应用的Sign
      */
-    private data class MDConfig(val appName: String, val appKey: String, val secretKey: String, val sign: String)
+    private data class MDConfig(val appName: String, val appKey: String, val sign: String)
 
 
 }
