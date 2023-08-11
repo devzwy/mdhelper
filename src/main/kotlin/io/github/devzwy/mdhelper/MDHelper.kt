@@ -79,6 +79,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
 
     /**
      * 查询同名称的应用是否已配置
+     * [appName] 应用名称
      */
     fun appExists(appName: String) = this.configList.filter { it.appName == appName }.isNotEmpty()
 
@@ -111,6 +112,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
 
     /**
      * 根据应用名称删除配置，找不到时不处理
+     * [appName] 应用名称
      */
     fun delConfig(appName: String) {
         if (appExists(appName)) {
@@ -297,7 +299,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * 内部自动判断是否成功，失败返回null
      * 成功返回范型对应的数据
      */
-    internal inline fun <reified T> String?.parseResp(): T? {
+    private inline fun <reified T> String?.parseResp(): T? {
         JSON.parseObject(this, object : TypeReference<MDBaseResult<T>>() {}).apply {
             return if (success) {
                 data
