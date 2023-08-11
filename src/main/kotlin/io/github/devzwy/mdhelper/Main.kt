@@ -1,6 +1,7 @@
-import io.github.devzwy.*
+package io.github.devzwy.mdhelper
+
 import com.alibaba.fastjson2.annotation.JSONField
-import io.github.devzwy.data.MDRow
+import io.github.devzwy.mdhelper.data.MDRow
 
 
 fun main() {
@@ -28,7 +29,7 @@ fun main() {
 //            println(getTableInfo(worksheetId = "64d31d096246a77574313d7b"))
 //
 //            println("获取表数据")
-//            val aa = getData<MDRowData<BBB>>(worksheetId = "64d31d096246a77574313d7b")
+//            val aa = getData<MDRowData<io.github.devzwy.mdhelper.BBB>>(worksheetId = "64d31d096246a77574313d7b")
 //            aa!!.rows.forEach {
 //                println(it.name + " " + it.rowid)
 //            }
@@ -39,7 +40,7 @@ fun main() {
 //
 //            println("获取行记录...")
 //
-//            val aaa = getRow<BBB>(worksheetId = "64d31d096246a77574313d7b", rowId = "a4ddea0b-5ae9-47fb-942d-44afe7d5046e")
+//            val aaa = getRow<io.github.devzwy.mdhelper.BBB>(worksheetId = "64d31d096246a77574313d7b", rowId = "a4ddea0b-5ae9-47fb-942d-44afe7d5046e")
 //            println(aaa!!.rowid)
 
 //            println(updateRow(worksheetId = "64d31d096246a77574313d7b", data = arrayOf(RowData("64d31df66246a77574313d93", "测试")), triggerWorkflow = false, rowId = "a4ddea0b-5ae9-47fb-942d-44afe7d5046e"))

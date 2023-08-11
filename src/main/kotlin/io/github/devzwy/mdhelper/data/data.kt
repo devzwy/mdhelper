@@ -1,4 +1,4 @@
-package io.github.devzwy.data
+package io.github.devzwy.mdhelper.data
 
 data class MDBaseResult<T>(
     val `data`: T, val error_code: Int, val error_msg: String = "", val success: Boolean

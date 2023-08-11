@@ -1,6 +1,6 @@
-package io.github.devzwy.http
+package io.github.devzwy.mdhelper.http
 
-import io.github.devzwy.data.ILoggerFactory
+import io.github.devzwy.mdhelper.data.ILoggerFactory
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -20,7 +20,7 @@ object HttpUtil {
      * 配置超时时间
      */
     fun setTimeOut(t: Long) {
-        this.timeout = t
+        timeout = t
     }
 
 
@@ -28,7 +28,7 @@ object HttpUtil {
      * 初始化
      */
     fun init(loggerFactory: ILoggerFactory? = null) {
-        this.loggerFactory = loggerFactory
+        HttpUtil.loggerFactory = loggerFactory
         client = OkHttpClient.Builder()
             .connectTimeout(timeout, TimeUnit.MILLISECONDS)
             .build()

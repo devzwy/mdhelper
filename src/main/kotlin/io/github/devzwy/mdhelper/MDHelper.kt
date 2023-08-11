@@ -1,9 +1,9 @@
-package io.github.devzwy
+package io.github.devzwy.mdhelper
 
-import io.github.devzwy.http.HttpUtil
+import io.github.devzwy.mdhelper.http.HttpUtil
 import com.alibaba.fastjson2.JSON
 import com.alibaba.fastjson2.TypeReference
-import io.github.devzwy.data.*
+import io.github.devzwy.mdhelper.data.*
 
 class MDHelper private constructor(private val baseUrl: String, private val configList: ArrayList<MDConfig>, val loggerFactory: ILoggerFactory? = null) {
 
