@@ -1,4 +1,4 @@
-package cn.uexpo
+package io.github.devzwy.data
 
 //数据类型枚举
 enum class DataType(val value: Int) {

@@ -1,9 +1,10 @@
-import cn.uexpo.*
+import io.github.devzwy.*
 import com.alibaba.fastjson2.annotation.JSONField
+import io.github.devzwy.data.MDRow
 
 
 fun main() {
-    MDHelper.Builder().baseUrl("https://code.umice.cn").httpTimeOut(5 * 1000)
+    MDHelper.Builder().baseUrl("xxx").httpTimeOut(5 * 1000)
         .addConfig("test1", "", "", "").build(false)
         .apply {
             println("开始测试函数...")

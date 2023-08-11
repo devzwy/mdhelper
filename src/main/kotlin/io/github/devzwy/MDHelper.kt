@@ -1,8 +1,9 @@
-package cn.uexpo
+package io.github.devzwy
 
-import cn.uexpo.http.HttpUtil
+import io.github.devzwy.http.HttpUtil
 import com.alibaba.fastjson2.JSON
 import com.alibaba.fastjson2.TypeReference
+import io.github.devzwy.data.*
 
 class MDHelper private constructor(private val baseUrl: String, private val configList: ArrayList<MDConfig>, val loggerFactory: ILoggerFactory? = null) {
 
@@ -15,7 +16,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
         private var loggerFactory: ILoggerFactory? = null
 
         /**
-         * 添加一个logger拦截器需要继承自[cn.uexpo.ILoggerFactory] 自行实现函数
+         * 添加一个logger拦截器需要继承自[io.github.devzwy.ILoggerFactory] 自行实现函数
          */
         fun logger(loggerFactory: ILoggerFactory) = apply { this.loggerFactory = loggerFactory }
 
@@ -93,7 +94,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * [appName] 应用名称，由添加配置时设定，为空时取最后一个添加到工具类的配置
      * [tableName] 工作表的名称，例如：用户表
      * [tableAlias] 工作表的别名，默认为空，例如：yhb
-     * [filed] 表字段，可传入多个。注意构造时内部的type必须使用[cn.uexpo.DataType]类进行构造，否则会出现找不到类型的错误
+     * [filed] 表字段，可传入多个。注意构造时内部的type必须使用[io.github.devzwy.DataType]类进行构造，否则会出现找不到类型的错误
      * @return 创建成功时返回工作表的ID，否则返回空
      */
     fun createTable(appName: String? = null, tableName: String, tableAlias: String? = null, vararg filed: CreateTableData) = HttpUtil.sendPost(
@@ -106,7 +107,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * 获取工作表结构信息
      * [appName] 应用名称，由添加配置时设定，为空时取最后一个添加到工具类的配置
      * [worksheetId] 获取的工作表的ID
-     * @return 表结构数据 [cn.uexpo.MDTableInfo]
+     * @return 表结构数据 [io.github.devzwy.MDTableInfo]
      */
     fun getTableInfo(appName: String? = null, worksheetId: String): MDTableInfo? {
         return HttpUtil.sendPost(
@@ -119,12 +120,12 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
 
     /**
      * 获取列表
-     * [R] MDRowData<最终接收实体(可继承自[cn.uexpo.MDRow]以获取父类字段)>
+     * [R] MDRowData<最终接收实体(可继承自[io.github.devzwy.MDRow]以获取父类字段)>
      * [appName] 应用名称，由添加配置时设定，为空时取最后一个添加到工具类的配置
      * [worksheetId] 工作表id
      * [pageSize] 分页数据 为空会拉取最大1000数据
      * [pageIndex] 分页数据 为空会拉取最大1000数据
-     * [filter] 筛选配置 使用[cn.uexpo.FilterBean.Builder]进行构造 为空时不筛选
+     * [filter] 筛选配置 使用[io.github.devzwy.FilterBean.Builder]进行构造 为空时不筛选
      * @return 查询结果列表
      */
     internal inline fun <reified R> getData(appName: String? = null, worksheetId: String, pageSize: Int? = null, pageIndex: Int? = null, filter: FilterData? = null): R? {
@@ -163,7 +164,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
 
     /**
      * 获取行记录详情
-     * [R] 最终接收实体(可继承自[cn.uexpo.MDRow]以获取父类字段)
+     * [R] 最终接收实体(可继承自[io.github.devzwy.MDRow]以获取父类字段)
      * [appName] 应用名称，由添加配置时设定，为空时取最后一个添加到工具类的配置
      * [worksheetId] 工作表id
      * [rowId] 行记录ID
@@ -225,7 +226,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * 获取工作表总行数
      * [appName] 应用名称，由添加配置时设定，为空时取最后一个添加到工具类的配置
      * [worksheetId] 工作表id
-     * [filter] 筛选配置 使用[cn.uexpo.FilterBean.Builder]进行构造 为空时不筛选
+     * [filter] 筛选配置 使用[io.github.devzwy.FilterBean.Builder]进行构造 为空时不筛选
      * @return 成功时返回行数，否则返回null
      */
     fun getWorksheetCount(appName: String? = null, worksheetId: String, filter: FilterData? = null): Int? {

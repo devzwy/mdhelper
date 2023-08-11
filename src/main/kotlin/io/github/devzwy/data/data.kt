@@ -1,6 +1,4 @@
-package cn.uexpo
-
-import com.alibaba.fastjson2.annotation.JSONField
+package io.github.devzwy.data
 
 data class MDBaseResult<T>(
     val `data`: T, val error_code: Int, val error_msg: String = "", val success: Boolean
@@ -24,7 +22,7 @@ data class CreateTableData(
     //字段别名
     val alias: String? = null,
     /**
-     * 字段类型，必须通过[cn.uexpo.DatType] 进行构造
+     * 字段类型，必须通过[io.github.devzwy.DatType] 进行构造
      */
     val type: Int,
     //是否必须
@@ -93,7 +91,7 @@ class FilterBean private constructor(val controlId: String, val value: String, v
         private var filterType: Int = 0
 
         /**
-         * 字段的类型 使用[cn.uexpo.DataType]构造
+         * 字段的类型 使用[io.github.devzwy.DataType]构造
          */
         fun typeOf(dateType: Int) = apply { this.dataType = dateType }
 

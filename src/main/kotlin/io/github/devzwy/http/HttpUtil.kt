@@ -1,6 +1,6 @@
-package cn.uexpo.http
+package io.github.devzwy.http
 
-import cn.uexpo.ILoggerFactory
+import io.github.devzwy.data.ILoggerFactory
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request

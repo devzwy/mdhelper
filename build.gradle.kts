@@ -5,7 +5,7 @@ plugins {
     kotlin("jvm") version "1.8.0"
 }
 
-group = "cn.uexpo"
+group = "io.github.devzwy"
 version = "1.0-SNAPSHOT"
 
 repositories {
