@@ -72,6 +72,22 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
 
     }
 
+
+    /**
+     * 查询同名称的应用是否已配置
+     */
+    private fun appExists(appName: String) = this.configList.filter { it.appName == appName }.isNotEmpty()
+
+    /**
+     * 添加一个操作应用数据
+     */
+    fun addConfig(appName: String, appKey: String, sign: String) = apply {
+        if (!appExists(appName)) {
+            this.configList.add(MDConfig(appName, appKey, sign))
+            loggerFactory?.log("配置添加完成：${this.configList.last()}")
+        }
+    }
+
     /**
      * 获取应用信息
      * 查询失败时返回null
