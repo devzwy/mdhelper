@@ -7,13 +7,13 @@
 <dependency>
   <groupId>io.github.devzwy</groupId>
   <artifactId>mdhelper</artifactId>
-  <version>2.1.2</version>
+  <version>2.1.3</version>
 </dependency>
 ```
 
 - Gradle
 ```
-implementation("io.github.devzwy:mdhelper:2.1.2")
+implementation("io.github.devzwy:mdhelper:2.1.3")
 ```
 
 ## [单元测试](https://github.com/devzwy/mdhelper/tree/main/src/test/kotlin/Test.kt)

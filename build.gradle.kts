@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.github.devzwy"
-version = "2.1.2"
+version = "2.1.3"
 
 val sourceJar by tasks.registering(Jar::class) {
     from(sourceSets["main"].allSource)
@@ -79,7 +79,9 @@ publishing {
 }
 
 repositories {
-    maven { url = uri("https://oss.sonatype.org/content/repositories/releases/") }
+    //https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/
+    //https://oss.sonatype.org/content/repositories/releases/
+    maven { url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") }
     mavenLocal()
     mavenCentral()
     maven {
