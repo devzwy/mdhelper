@@ -4,10 +4,11 @@ import io.github.devzwy.mdhelper.http.HttpUtil
 import com.alibaba.fastjson2.JSON
 import com.alibaba.fastjson2.TypeReference
 import io.github.devzwy.mdhelper.data.*
+import io.github.devzwy.mdhelper.util.toRowDataList
 
-class MDHelper private constructor(private val baseUrl: String, private val configList: ArrayList<MDConfig>, val loggerFactory: ILoggerFactory? = null) {
+class MDHelper private constructor(private val baseUrl: String, private val configList: ArrayList<MDConfig>, private val loggerFactory: ILoggerFactory? = null) {
 
-    class Builder() {
+    class Builder {
 
         private var baseUrl: String = ""
 
@@ -18,7 +19,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
         /**
          * 添加一个logger拦截器需要继承自[io.github.devzwy.ILoggerFactory] 自行实现函数
          */
-        fun logger(loggerFactory: ILoggerFactory) = apply { this.loggerFactory = loggerFactory }
+        fun setLogger(loggerFactory: ILoggerFactory) = apply { this.loggerFactory = loggerFactory }
 
         /**
          * 明道云地址
@@ -36,7 +37,10 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
 
 
         /**
-         * 添加一个操作应用数据
+         * 添加一个操作应用数据,重复的应用名称会跳过添加
+         * [appName] 应用名称
+         * [appKey] AppKey
+         * [sign] Sign
          */
         fun addConfig(appName: String, appKey: String, sign: String) = apply {
             if (!appExists(appName)) {
@@ -50,7 +54,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
          * [check] 检查所有配置是否正常,开启时配置错误时内部将抛出异常，默认开启
          */
         fun build(check: Boolean = true): MDHelper {
-            if (this.baseUrl.isNullOrEmpty() || this.configList.isEmpty()) throw NullPointerException("未配置baseUrl或添加应用，请调用Builder.baseUrl/.addConfig后再试。")
+            if (this.baseUrl.isEmpty() || this.configList.isEmpty()) throw NullPointerException("未配置baseUrl或添加应用，请调用Builder.baseUrl/.addConfig后再试。")
             return MDHelper(this.baseUrl, configList).also {
                 HttpUtil.init(loggerFactory)
                 if (check) {
@@ -76,15 +80,42 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
     /**
      * 查询同名称的应用是否已配置
      */
-    private fun appExists(appName: String) = this.configList.filter { it.appName == appName }.isNotEmpty()
+    fun appExists(appName: String) = this.configList.filter { it.appName == appName }.isNotEmpty()
 
     /**
-     * 添加一个操作应用数据
+     * 临时添加一个操作应用数据 重复的应用名称不会被添加
+     * [appName] 应用名称
+     * [appKey] AppKey
+     * [sign] Sign
      */
-    fun addConfig(appName: String, appKey: String, sign: String) = apply {
+    fun addConfig(appName: String, appKey: String, sign: String) {
         if (!appExists(appName)) {
             this.configList.add(MDConfig(appName, appKey, sign))
             loggerFactory?.log("配置添加完成：${this.configList.last()}")
+        }
+    }
+
+    /**
+     * 根据应用名称修改原有配置，找不到时不做处理
+     * [appName] 应用名称
+     * [appKey] 新的AppKey
+     * [sign] 新的Sign
+     */
+    fun updateConfig(appName: String, appKey: String, sign: String) {
+        if (appExists(appName)) {
+            this.configList.removeIf { it.appName == appName }
+            this.configList.add(MDConfig(appName, appKey, sign))
+            loggerFactory?.log("配置更新完成")
+        }
+    }
+
+    /**
+     * 根据应用名称删除配置，找不到时不处理
+     */
+    fun delConfig(appName: String) {
+        if (appExists(appName)) {
+            this.configList.removeIf { it.appName == appName }
+            loggerFactory?.log("配置删除完成")
         }
     }
 
@@ -167,19 +198,13 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * [data] 写入的列数据
      * @return 成功时返回写入记录的行ID 否则为空
      */
-    fun insertRow(appName: String? = null, worksheetId: String, triggerWorkflow: Boolean? = null, data:HashMap<String,Any?>): String? {
+    fun insertRow(appName: String? = null, worksheetId: String, triggerWorkflow: Boolean? = null, data: HashMap<String, Any?>): String? {
         if (data.isEmpty() || worksheetId.isEmpty()) return null
-
-        val ls = arrayListOf<RowData>()
-        data.forEach { t, u ->
-            ls.add(RowData(t,u))
-        }
-
         return HttpUtil.sendPost(
             "/api/v2/open/worksheet/addRow".getRequestUrl(), hashMapOf<String, Any?>(
                 "worksheetId" to worksheetId,
                 "triggerWorkflow" to triggerWorkflow,
-                "controls" to ls
+                "controls" to data.toRowDataList()
             ).buildRequestJsonParams(appName)
         ).parseResp<String>()
     }
@@ -211,20 +236,15 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * [rowId] 更新的行记录ID
      * @return 成功时返回true，否则返回null
      */
-    fun updateRow(appName: String? = null, worksheetId: String, rowId: String, triggerWorkflow: Boolean? = null,  data: HashMap<String,Any?>): Boolean? {
+    fun updateRow(appName: String? = null, worksheetId: String, rowId: String, triggerWorkflow: Boolean? = null, data: HashMap<String, Any?>): Boolean? {
         if (data.isEmpty() || worksheetId.isEmpty() || rowId.isEmpty()) return null
-
-        val ls = arrayListOf<RowData>()
-        data.forEach { t, u ->
-            ls.add(RowData(t,u))
-        }
 
         return HttpUtil.sendPost(
             "/api/v2/open/worksheet/editRow".getRequestUrl(), hashMapOf<String, Any?>(
                 "worksheetId" to worksheetId,
                 "triggerWorkflow" to triggerWorkflow,
                 "rowId" to rowId,
-                "controls" to ls
+                "controls" to data.toRowDataList()
             ).buildRequestJsonParams(appName)
         ).parseResp<Boolean>()
     }
