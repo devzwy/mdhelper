@@ -1,19 +1,22 @@
 # mdhelper
 明道云Api封装
 
+
+
 ## 依赖
+### [latest version](https://central.sonatype.com/artifact/io.github.devzwy/mdhelper)
 - Maven
 ```
 <dependency>
   <groupId>io.github.devzwy</groupId>
   <artifactId>mdhelper</artifactId>
-  <version>2.1.3</version>
+  <version>2.1.5</version>
 </dependency>
 ```
 
 - Gradle
 ```
-implementation("io.github.devzwy:mdhelper:2.1.3")
+implementation("io.github.devzwy:mdhelper:2.1.5")
 ```
 
 ## [单元测试](https://github.com/devzwy/mdhelper/tree/main/src/test/kotlin/Test.kt)
