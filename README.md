@@ -20,7 +20,7 @@ implementation("io.github.devzwy:mdhelper:2.1.5")
 ```
 
 ## [单元测试](https://github.com/devzwy/mdhelper/tree/main/src/test/kotlin/Test.kt)
-![单元测试](https://github.com/devzwy/mdhelper/imgs/test.png)
+![单元测试](https://github.com/devzwy/mdhelper/blob/main/imgs/test.png)
 ## 开始使用
 ### 实例构造
 ```kotlin
