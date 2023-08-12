@@ -17,7 +17,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
         private var loggerFactory: ILoggerFactory? = null
 
         /**
-         * 添加一个logger拦截器需要继承自[io.github.devzwy.ILoggerFactory] 自行实现函数
+         * 添加一个logger拦截器需要继承自[io.github.devzwy.mdhelper.data.ILoggerFactory] 自行实现函数
          */
         fun setLogger(loggerFactory: ILoggerFactory) = apply { this.loggerFactory = loggerFactory }
 
@@ -42,7 +42,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
          * [appKey] AppKey
          * [sign] Sign
          */
-        fun addConfig(appName: String, appKey: String, sign: String) = apply {
+        fun addConfig(appName: Any, appKey: String, sign: String) = apply {
             if (!appExists(appName)) {
                 this.configList.add(MDConfig(appName, appKey, sign))
                 loggerFactory?.log("配置添加完成：${this.configList.last()}")
@@ -72,7 +72,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
         /**
          * 查询同名称的应用是否已配置
          */
-        private fun appExists(appName: String) = this.configList.filter { it.appName == appName }.isNotEmpty()
+        private fun appExists(appName: Any) = this.configList.filter { it.appName == appName }.isNotEmpty()
 
     }
 
@@ -81,7 +81,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * 查询同名称的应用是否已配置
      * [appName] 应用名称
      */
-    fun appExists(appName: String) = this.configList.filter { it.appName == appName }.isNotEmpty()
+    fun appExists(appName: Any) = this.configList.filter { it.appName == appName }.isNotEmpty()
 
     /**
      * 临时添加一个操作应用数据 重复的应用名称不会被添加
@@ -89,7 +89,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * [appKey] AppKey
      * [sign] Sign
      */
-    fun addConfig(appName: String, appKey: String, sign: String) {
+    fun addConfig(appName: Any, appKey: String, sign: String) {
         if (!appExists(appName)) {
             this.configList.add(MDConfig(appName, appKey, sign))
             loggerFactory?.log("配置添加完成：${this.configList.last()}")
@@ -102,7 +102,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * [appKey] 新的AppKey
      * [sign] 新的Sign
      */
-    fun updateConfig(appName: String, appKey: String, sign: String) {
+    fun updateConfig(appName: Any, appKey: String, sign: String) {
         if (appExists(appName)) {
             this.configList.removeIf { it.appName == appName }
             this.configList.add(MDConfig(appName, appKey, sign))
@@ -114,7 +114,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * 根据应用名称删除配置，找不到时不处理
      * [appName] 应用名称
      */
-    fun delConfig(appName: String) {
+    fun delConfig(appName: Any) {
         if (appExists(appName)) {
             this.configList.removeIf { it.appName == appName }
             loggerFactory?.log("配置删除完成")
@@ -127,7 +127,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * [appName] 应用名称，由添加配置时设定，为空时取最后一个添加到工具类的配置
      * @return 成功时返回应用信息，否则返回空。
      */
-    fun getAppInfo(appName: String? = null): AppInfo? {
+    fun getAppInfo(appName: Any? = null): AppInfo? {
         appName.getConfig().let { mdConfig ->
             return HttpUtil.sendGet(
                 "/api/v1/open/app/get".getRequestUrl(), hashMapOf(
@@ -143,10 +143,10 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * [appName] 应用名称，由添加配置时设定，为空时取最后一个添加到工具类的配置
      * [tableName] 工作表的名称，例如：用户表
      * [tableAlias] 工作表的别名，默认为空，例如：yhb
-     * [filed] 表字段，可传入多个。注意构造时内部的type必须使用[io.github.devzwy.DataType]类进行构造，否则会出现找不到类型的错误
+     * [filed] 表字段，可传入多个。注意构造时内部的type必须使用[io.github.devzwy.mdhelper.data.DataType]类进行构造，否则会出现找不到类型的错误
      * @return 创建成功时返回工作表的ID，否则返回空
      */
-    fun createTable(appName: String? = null, tableName: String, tableAlias: String? = null, vararg filed: CreateTableData) = HttpUtil.sendPost(
+    fun createTable(appName: Any? = null, tableName: String, tableAlias: String? = null, vararg filed: CreateTableData) = HttpUtil.sendPost(
         "/api/v2/open/worksheet/addWorksheet".getRequestUrl(),
         hashMapOf<String, Any?>("name" to tableName, "alias" to tableAlias, "controls" to filed).buildRequestJsonParams(appName)
     ).parseResp<String>()
@@ -156,9 +156,9 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * 获取工作表结构信息
      * [appName] 应用名称，由添加配置时设定，为空时取最后一个添加到工具类的配置
      * [worksheetId] 获取的工作表的ID
-     * @return 表结构数据 [io.github.devzwy.MDTableInfo]
+     * @return 表结构数据 [io.github.devzwy.mdhelper.data.MDTableInfo]
      */
-    fun getTableInfo(appName: String? = null, worksheetId: String): MDTableInfo? {
+    fun getTableInfo(appName: Any? = null, worksheetId: String): MDTableInfo? {
         return HttpUtil.sendPost(
             "/api/v2/open/worksheet/getWorksheetInfo".getRequestUrl(), hashMapOf<String, Any?>(
                 "worksheetId" to worksheetId
@@ -169,15 +169,15 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
 
     /**
      * 获取列表
-     * [R] MDRowData<最终接收实体(可继承自[io.github.devzwy.MDRow]以获取父类字段)>
+     * [R] 传入MDRowData<最终接收实体(可继承自[io.github.devzwy.mdhelper.data.MDRow]以获取父类字段)>
      * [appName] 应用名称，由添加配置时设定，为空时取最后一个添加到工具类的配置
      * [worksheetId] 工作表id
      * [pageSize] 分页数据 为空会拉取最大1000数据
      * [pageIndex] 分页数据 为空会拉取最大1000数据
-     * [filter] 筛选配置 使用[io.github.devzwy.FilterBean.Builder]进行构造 为空时不筛选
+     * [filter] 筛选配置 使用[io.github.devzwy.mdhelper.data.FilterBean.Builder]进行构造 为空时不筛选
      * @return 查询结果列表
      */
-    internal inline fun <reified R> getData(appName: String? = null, worksheetId: String, pageSize: Int? = null, pageIndex: Int? = null, filter: FilterData? = null): R? {
+    internal inline fun <reified R> getData(appName: Any? = null, worksheetId: String, pageSize: Int? = null, pageIndex: Int? = null, filter: FilterData? = null): R? {
         return HttpUtil.sendPost(
             "/api/v2/open/worksheet/getFilterRows".getRequestUrl(), hashMapOf<String, Any?>(
                 "worksheetId" to worksheetId,
@@ -200,7 +200,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * [data] 写入的列数据
      * @return 成功时返回写入记录的行ID 否则为空
      */
-    fun insertRow(appName: String? = null, worksheetId: String, triggerWorkflow: Boolean? = null, data: HashMap<String, Any?>): String? {
+    fun insertRow(appName: Any? = null, worksheetId: String, triggerWorkflow: Boolean? = null, data: HashMap<String, Any?>): String? {
         if (data.isEmpty() || worksheetId.isEmpty()) return null
         return HttpUtil.sendPost(
             "/api/v2/open/worksheet/addRow".getRequestUrl(), hashMapOf<String, Any?>(
@@ -213,13 +213,13 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
 
     /**
      * 获取行记录详情
-     * [R] 最终接收实体(可继承自[io.github.devzwy.MDRow]以获取父类字段)
+     * [R] 最终接收实体(可继承自[io.github.devzwy.mdhelper.data.MDRow]以获取父类字段)
      * [appName] 应用名称，由添加配置时设定，为空时取最后一个添加到工具类的配置
      * [worksheetId] 工作表id
      * [rowId] 行记录ID
      * @return
      */
-    internal inline fun <reified R> getRow(appName: String? = null, worksheetId: String, rowId: String): R? {
+    internal inline fun <reified R> getRow(appName: Any? = null, worksheetId: String, rowId: String): R? {
         if (rowId.isEmpty() || worksheetId.isEmpty()) return null
         return HttpUtil.sendPost(
             "/api/v2/open/worksheet/getRowByIdPost".getRequestUrl(), hashMapOf<String, Any?>(
@@ -238,7 +238,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * [rowId] 更新的行记录ID
      * @return 成功时返回true，否则返回null
      */
-    fun updateRow(appName: String? = null, worksheetId: String, rowId: String, triggerWorkflow: Boolean? = null, data: HashMap<String, Any?>): Boolean? {
+    fun updateRow(appName: Any? = null, worksheetId: String, rowId: String, triggerWorkflow: Boolean? = null, data: HashMap<String, Any?>): Boolean? {
         if (data.isEmpty() || worksheetId.isEmpty() || rowId.isEmpty()) return null
 
         return HttpUtil.sendPost(
@@ -260,7 +260,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * [triggerWorkflow] 是否触发工作流
      * @return 成功时返回true，否则返回null
      */
-    fun delRow(appName: String? = null, worksheetId: String, rowId: String, triggerWorkflow: Boolean? = null): Boolean? {
+    fun delRow(appName: Any? = null, worksheetId: String, rowId: String, triggerWorkflow: Boolean? = null): Boolean? {
         if (worksheetId.isEmpty() || rowId.isEmpty()) return null
         return HttpUtil.sendPost(
             "/api/v2/open/worksheet/deleteRow".getRequestUrl(), hashMapOf<String, Any?>(
@@ -276,10 +276,10 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * 获取工作表总行数
      * [appName] 应用名称，由添加配置时设定，为空时取最后一个添加到工具类的配置
      * [worksheetId] 工作表id
-     * [filter] 筛选配置 使用[io.github.devzwy.FilterBean.Builder]进行构造 为空时不筛选
+     * [filter] 筛选配置 使用[io.github.devzwy.mdhelper.data.FilterBean.Builder]进行构造 为空时不筛选
      * @return 成功时返回行数，否则返回null
      */
-    fun getWorksheetCount(appName: String? = null, worksheetId: String, filter: FilterData? = null): Int? {
+    fun getWorksheetCount(appName: Any? = null, worksheetId: String, filter: FilterData? = null): Int? {
         return HttpUtil.sendPost(
             "/api/v2/open/worksheet/getFilterRowsTotalNum".getRequestUrl(), hashMapOf<String, Any?>(
                 "worksheetId" to worksheetId,
@@ -314,12 +314,12 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * 根据AppName在配置中查找出对应的配置实体，传入空时默认返回最后一个配置
      * 传入的appName查找不到时会报错
      */
-    private fun String?.getConfig() = if (this.isNullOrEmpty()) configList.last() else configList.filter { it.appName == this }.last()
+    private fun Any?.getConfig() = if (this ==null) configList.last() else configList.filter { it.appName == this }.last()
 
     /**
      * 构建请求json参数
      */
-    private fun HashMap<String, Any?>.buildRequestJsonParams(appName: String?): String {
+    private fun HashMap<String, Any?>.buildRequestJsonParams(appName: Any?): String {
         appName.getConfig().let { mdConfig ->
             this["appKey"] = mdConfig.appKey
             this["sign"] = mdConfig.sign
@@ -334,7 +334,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * [secretKey] 应用的SecretKey
      * [sign] 应用的Sign
      */
-    private data class MDConfig(val appName: String, val appKey: String, val sign: String)
+    private data class MDConfig(val appName: Any, val appKey: String, val sign: String)
 
 
 }
