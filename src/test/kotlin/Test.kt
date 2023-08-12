@@ -25,6 +25,7 @@ class Test {
 
         //TODO 修改这里的参数进行测试
         private val BASE_URL = "https://xxx.xxx.cn"
+        //TODO 写已经存在的应用名称进行测试
         private val APP_NAME = "应用名称，用来区分不同的配置"
         private val APP_KEY = "应用Key"
         private val APP_SIGN = "应用的签名"
