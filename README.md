@@ -1,7 +1,9 @@
 # mdhelper
-明道云Api封装
+明道云Api封装，kotlin环境测试。
+部分Api在Java环境可能不被支持，例如：__getData__、__getRow__，可能需要使用GPT自己处理一下。
 
-
+## [单元测试](https://github.com/devzwy/mdhelper/tree/main/src/test/kotlin/Test.kt)
+![单元测试](https://github.com/devzwy/mdhelper/blob/main/imgs/test.png)
 
 ## 依赖
 ### [latest version](https://central.sonatype.com/artifact/io.github.devzwy/mdhelper)
@@ -19,8 +21,6 @@
 implementation("io.github.devzwy:mdhelper:2.1.5")
 ```
 
-## [单元测试](https://github.com/devzwy/mdhelper/tree/main/src/test/kotlin/Test.kt)
-![单元测试](https://github.com/devzwy/mdhelper/blob/main/imgs/test.png)
 ## 开始使用
 ### 实例构造
 ```kotlin
