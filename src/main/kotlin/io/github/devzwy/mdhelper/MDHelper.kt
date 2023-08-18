@@ -168,6 +168,28 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
 
 
     /**
+     * 临时读取指定url的表结构数据
+     * 需要传入全部参数,不会加入配置中
+     * [url] 获取工作表全url http://xxx ... getWorksheetInfo
+     * [appKey] 应用密钥
+     * [sign] 应用签名
+     * [worksheetId] 表名
+     * @return 获取成功时返回表结构数据，否则返回null
+     */
+    fun getTableInfoOfTmp(url: String, appKey: String, sign: String, worksheetId: String): MDTableInfo? {
+        return HttpUtil.sendPost(
+            url, JSON.toJSONString(
+                hashMapOf<String, Any?>(
+                    "worksheetId" to worksheetId,
+                    "appKey" to appKey,
+                    "sign" to sign,
+                )
+            )
+        ).parseResp<MDTableInfo>()
+    }
+
+
+    /**
      * 获取列表
      * [R] 传入MDRowData<最终接收实体(可继承自[io.github.devzwy.mdhelper.data.MDRow]以获取父类字段)>
      * [appName] 应用名称，由添加配置时设定，为空时取最后一个添加到工具类的配置
@@ -314,7 +336,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * 根据AppName在配置中查找出对应的配置实体，传入空时默认返回最后一个配置
      * 传入的appName查找不到时会报错
      */
-    private fun Any?.getConfig() = if (this ==null) configList.last() else configList.filter { it.appName == this }.last()
+    private fun Any?.getConfig() = if (this == null) configList.last() else configList.filter { it.appName == this }.last()
 
     /**
      * 构建请求json参数
