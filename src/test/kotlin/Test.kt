@@ -9,6 +9,7 @@ import org.junit.jupiter.api.TestMethodOrder
 import kotlin.random.Random
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
 
 /**
  * 测试流程：
@@ -208,6 +209,14 @@ class Test {
         assert(isDelSucc)
         println("删除行 通过")
     }
+
+    @Test
+    @Order(12)
+    fun test_getTableInfoOfTmp() {
+        assertNotNull(mdHelper.getTableInfoOfTmp(url = "xxx", appKey = "xxx", sign = "xxx", worksheetId = "xxx"))
+        println("临时获取表结构 通过")
+    }
+
 
     data class User(
         @JSONField(name = "account")
