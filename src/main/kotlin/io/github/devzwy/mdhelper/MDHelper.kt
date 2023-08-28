@@ -6,7 +6,7 @@ import com.alibaba.fastjson2.TypeReference
 import io.github.devzwy.mdhelper.data.*
 import io.github.devzwy.mdhelper.util.toRowDataList
 
-class MDHelper private constructor(private val baseUrl: String, private val configList: ArrayList<MDConfig>, private val loggerFactory: ILoggerFactory? = null) {
+class MDHelper private constructor(private val baseUrl: String, private val configList: ArrayList<MDConfig>, val loggerFactory: ILoggerFactory? = null) {
 
     class Builder {
 
@@ -199,7 +199,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * [filter] 筛选配置 使用[io.github.devzwy.mdhelper.data.FilterBean.Builder]进行构造 为空时不筛选
      * @return 查询结果列表
      */
-    internal inline fun <reified R> getData(appName: Any? = null, worksheetId: String, pageSize: Int? = null, pageIndex: Int? = null, filter: FilterData? = null): R? {
+    inline fun <reified R> getData(appName: Any? = null, worksheetId: String, pageSize: Int? = null, pageIndex: Int? = null, filter: FilterData? = null): R? {
         return HttpUtil.sendPost(
             "/api/v2/open/worksheet/getFilterRows".getRequestUrl(), hashMapOf<String, Any?>(
                 "worksheetId" to worksheetId,
@@ -314,14 +314,14 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
     /**
      * 子路径拼接全路径
      */
-    private fun String.getRequestUrl() = "${baseUrl}/${this}"
+    fun String.getRequestUrl() = "${baseUrl}/${this}"
 
     /**
      * 格式化一下回传的参数
      * 内部自动判断是否成功，失败返回null
      * 成功返回范型对应的数据
      */
-    private inline fun <reified T> String?.parseResp(): T? {
+    inline fun <reified T> String?.parseResp(): T? {
         JSON.parseObject(this, object : TypeReference<MDBaseResult<T>>() {}).apply {
             return if (success) {
                 data
@@ -341,7 +341,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
     /**
      * 构建请求json参数
      */
-    private fun HashMap<String, Any?>.buildRequestJsonParams(appName: Any?): String {
+    fun HashMap<String, Any?>.buildRequestJsonParams(appName: Any?): String {
         appName.getConfig().let { mdConfig ->
             this["appKey"] = mdConfig.appKey
             this["sign"] = mdConfig.sign
