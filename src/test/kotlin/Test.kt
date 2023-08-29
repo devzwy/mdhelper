@@ -1,4 +1,3 @@
-import com.alibaba.fastjson.annotation.JSONField
 import io.github.devzwy.mdhelper.MDHelper
 import io.github.devzwy.mdhelper.data.*
 import org.junit.jupiter.api.AfterAll
@@ -25,11 +24,11 @@ class Test {
     companion object {
 
         //TODO 修改这里的参数进行测试
-        private val BASE_URL = "https://xxx.xxx.cn"
+        private val BASE_URL = "https://xx.xx.cn"
         //TODO 写已经存在的应用名称进行测试
-        private val APP_NAME = "应用名称，用来区分不同的配置"
-        private val APP_KEY = "应用Key"
-        private val APP_SIGN = "应用的签名"
+        private val APP_NAME = "未命名应用"
+        private val APP_KEY = "c9bxxx9exxxxx41ac6"
+        private val APP_SIGN = "xxxxxx=="
         //TODO 修改上面的参数进行测试
 
         private val rInt = Random.nextInt(100, 999)
@@ -204,22 +203,23 @@ class Test {
 
     @Test
     @Order(11)
+    fun test_getTableInfoOfTmp() {
+        assertNotNull(mdHelper.getTableInfoOfTmp(url = BASE_URL, appKey = APP_KEY, sign = APP_SIGN, worksheetId = tmpTableId))
+        println("临时获取表结构 通过")
+    }
+
+    @Test
+    @Order(12)
     fun test_delRow() {
         val isDelSucc = mdHelper.delRow(appName = APP_NAME, worksheetId = tmpTableId, rowId = tmpRowId)!!
         assert(isDelSucc)
         println("删除行 通过")
     }
 
-    @Test
-    @Order(12)
-    fun test_getTableInfoOfTmp() {
-        assertNotNull(mdHelper.getTableInfoOfTmp(url = "xxx", appKey = "xxx", sign = "xxx", worksheetId = "xxx"))
-        println("临时获取表结构 通过")
-    }
+
 
 
     data class User(
-        @JSONField(name = "account")
         val account: String, val password: Int
     ) : MDRow()
 

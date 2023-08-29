@@ -1,12 +1,16 @@
 package io.github.devzwy.mdhelper
 
 import io.github.devzwy.mdhelper.http.HttpUtil
-import com.alibaba.fastjson2.JSON
-import com.alibaba.fastjson2.TypeReference
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.github.devzwy.mdhelper.data.*
 import io.github.devzwy.mdhelper.util.toRowDataList
 
 class MDHelper private constructor(private val baseUrl: String, private val configList: ArrayList<MDConfig>, val loggerFactory: ILoggerFactory? = null) {
+
+    private val gson by lazy {
+        Gson()
+    }
 
     class Builder {
 
@@ -15,6 +19,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
         private val configList = arrayListOf<MDConfig>()
 
         private var loggerFactory: ILoggerFactory? = null
+
 
         /**
          * 添加一个logger拦截器需要继承自[io.github.devzwy.mdhelper.data.ILoggerFactory] 自行实现函数
@@ -170,7 +175,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
     /**
      * 临时读取指定url的表结构数据
      * 需要传入全部参数,不会加入配置中
-     * [url] 获取工作表全url http://xxx ... getWorksheetInfo
+     * [url] baseUrl http://xxx.cn
      * [appKey] 应用密钥
      * [sign] 应用签名
      * [worksheetId] 表名
@@ -178,7 +183,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      */
     fun getTableInfoOfTmp(url: String, appKey: String, sign: String, worksheetId: String): MDTableInfo? {
         return HttpUtil.sendPost(
-            url, JSON.toJSONString(
+            "${if (url.endsWith("/")) url.substring(0, url.length - 1) else url}/api/v2/open/worksheet/getWorksheetInfo", gson.toJson(
                 hashMapOf<String, Any?>(
                     "worksheetId" to worksheetId,
                     "appKey" to appKey,
@@ -322,7 +327,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * 成功返回范型对应的数据
      */
     inline fun <reified T> String?.parseResp(): T? {
-        JSON.parseObject(this, object : TypeReference<MDBaseResult<T>>() {}).apply {
+        Gson().fromJson<MDBaseResult<T>>(this, object : TypeToken<MDBaseResult<T>>() {}.type).apply {
             return if (success) {
                 data
             } else {
@@ -345,7 +350,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
         appName.getConfig().let { mdConfig ->
             this["appKey"] = mdConfig.appKey
             this["sign"] = mdConfig.sign
-            return JSON.toJSONString(this)
+            return gson.toJson(this)
         }
     }
 

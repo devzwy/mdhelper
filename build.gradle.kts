@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.github.devzwy"
-version = "2.1.7"
+version = "2.1.8"
 
 val sourceJar by tasks.registering(Jar::class) {
     from(sourceSets["main"].allSource)
@@ -41,7 +41,7 @@ publishing {
 
             pom {
                 name.set("mdhelper")
-                description.set("明道云工具类")
+                description.set("明道云工具类,封装了基础的增删改查操作。适用于Java、Android")
                 url.set("https://github.com/devzwy/mdhelper")
 
                 scm {
@@ -102,7 +102,8 @@ configure<SigningExtension> {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("com.alibaba:fastjson:2.0.32")
+//    implementation("com.alibaba:fastjson:2.0.32")
+    implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
 }
 
