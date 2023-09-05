@@ -1,3 +1,12 @@
+# 初始化函数不要加入异步的check
+# 单独增加一个函数做check
+# 响应参数只打印一份
+
+
+
+
+
+
 # mdhelper
 明道云Api封装，kotlin环境测试。
 部分Api在Java环境可能不被支持，例如：__getData__、__getRow__，可能需要使用GPT自己处理一下。
@@ -12,13 +21,13 @@
 <dependency>
   <groupId>io.github.devzwy</groupId>
   <artifactId>mdhelper</artifactId>
-  <version>2.1.8</version>
+  <version>2.1.9</version>
 </dependency>
 ```
 
 - Gradle
 ```
-implementation("io.github.devzwy:mdhelper:2.1.7")
+implementation("io.github.devzwy:mdhelper:2.1.9")
 ```
 
 ## 开始使用

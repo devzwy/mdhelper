@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.github.devzwy"
-version = "2.1.8"
+version = "2.1.9"
 
 val sourceJar by tasks.registering(Jar::class) {
     from(sourceSets["main"].allSource)
@@ -105,6 +105,7 @@ dependencies {
 //    implementation("com.alibaba:fastjson:2.0.32")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
+//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
 }
 
 tasks.test {

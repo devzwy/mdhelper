@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.github.devzwy.mdhelper.data.*
 import io.github.devzwy.mdhelper.util.toRowDataList
+import java.util.*
 
 class MDHelper private constructor(private val baseUrl: String, private val configList: ArrayList<MDConfig>, val loggerFactory: ILoggerFactory? = null) {
 
@@ -80,7 +81,6 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
         private fun appExists(appName: Any) = this.configList.filter { it.appName == appName }.isNotEmpty()
 
     }
-
 
     /**
      * 查询同名称的应用是否已配置
@@ -187,7 +187,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
                 hashMapOf<String, Any?>(
                     "worksheetId" to worksheetId,
                     "appKey" to appKey,
-                    "sign" to sign,
+                    "sign" to sign
                 )
             )
         ).parseResp<MDTableInfo>()
@@ -251,7 +251,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
         return HttpUtil.sendPost(
             "/api/v2/open/worksheet/getRowByIdPost".getRequestUrl(), hashMapOf<String, Any?>(
                 "worksheetId" to worksheetId,
-                "rowId" to rowId,
+                "rowId" to rowId
             ).buildRequestJsonParams(appName)
         ).parseResp<R>()
     }
@@ -293,7 +293,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
             "/api/v2/open/worksheet/deleteRow".getRequestUrl(), hashMapOf<String, Any?>(
                 "worksheetId" to worksheetId,
                 "triggerWorkflow" to triggerWorkflow,
-                "rowId" to rowId,
+                "rowId" to rowId
             ).buildRequestJsonParams(appName)
         ).parseResp<Boolean>()
     }

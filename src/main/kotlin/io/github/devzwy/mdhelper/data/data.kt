@@ -51,7 +51,7 @@ data class MDTableControl(
     val options: List<MDOption>? = null,
     val required: Boolean? = null,
     val type: Int,
-    val unique: Boolean,
+    val unique: Boolean
 )
 
 data class MDView(
@@ -95,10 +95,19 @@ class FilterBean private constructor(val controlId: String,  val value: Any?,  v
          */
         fun typeOf(dateType: Int) = apply { this.dataType = dateType }
 
+        /**
+         * 字段的类型 使用[io.github.devzwy.FilterType]构造
+         */
         fun filterOf(filterType: Int) = apply { this.filterType = filterType }
 
+        /**
+         * 与下一组条件的关系为AND拼接
+         */
         fun buildAnd() = FilterBean(controlId, value, dataType, 1, filterType)
 
+        /**
+         * 与下一组条件的关系为OR拼接
+         */
         fun buildOr() = FilterBean(controlId, value, dataType, 2, filterType)
     }
 }
