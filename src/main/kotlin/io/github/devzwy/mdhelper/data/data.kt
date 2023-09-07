@@ -82,8 +82,24 @@ data class RowData(
     val value: Any?
 )
 
-class FilterBean private constructor(val controlId: String,  val value: Any?,  val dataType: Int,  val spliceType: Int,  val filterType: Int) {
-    class Builder(private val controlId: String, private val value: Any?) {
+class FilterBean private constructor(val controlId: String,  val value: Any?, val values: Any?,  val dataType: Int,  val spliceType: Int,  val filterType: Int) {
+    class Builder(
+        /**
+         * 字段名称
+         */
+        private val controlId: String,
+        /**
+         * 单个值
+         */
+        private val value: Any? = null ,
+        /**
+         * 多个值
+         */
+        val values: Any?=null,
+        /**
+         * 筛选类型 只能一种 使用 [io.github.devzwy.mdhelper.data.SpliceType]构造取值
+         */
+        val spliceType: Int) {
         //字段类型
         private var dataType: Int = 0
 
@@ -91,24 +107,20 @@ class FilterBean private constructor(val controlId: String,  val value: Any?,  v
         private var filterType: Int = 0
 
         /**
-         * 字段的类型 使用[io.github.devzwy.DataType]构造
+         * 字段的类型 使用[io.github.devzwy.mdhelper.data.DataType]构造
          */
         fun typeOf(dateType: Int) = apply { this.dataType = dateType }
 
         /**
-         * 字段的类型 使用[io.github.devzwy.FilterType]构造
+         * 字段的类型 使用[io.github.devzwy.mdhelper.data.FilterType]构造
          */
         fun filterOf(filterType: Int) = apply { this.filterType = filterType }
 
         /**
          * 与下一组条件的关系为AND拼接
          */
-        fun buildAnd() = FilterBean(controlId, value, dataType, 1, filterType)
+        fun build() = FilterBean(controlId, value, values,dataType, spliceType, filterType)
 
-        /**
-         * 与下一组条件的关系为OR拼接
-         */
-        fun buildOr() = FilterBean(controlId, value, dataType, 2, filterType)
     }
 }
 

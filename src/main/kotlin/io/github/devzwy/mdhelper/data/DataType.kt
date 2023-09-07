@@ -81,6 +81,11 @@ enum class FilterType(val value: Int) {
     Lte(16),
 }
 
+enum class SpliceType(val value: Int){
+    AND(1),
+    OR(2)
+}
+
 //返回的错误码
 enum class ErrorCode(val value: Int) {
     //失败
