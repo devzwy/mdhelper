@@ -79,11 +79,41 @@ enum class FilterType(val value: Int) {
 
     // <=
     Lte(16),
+
+    // 日期是
+    DateEq(17),
+
+    // 日期不是
+    NDateEq(18),
+
+    // 数组等于
+    ArrEq(26),
+
+    // 数组不等于
+    ArrNe(27),
+
+    // 日期在范围内
+    DateBetween(31),
+
+    // 日期不在范围内
+    DateNBetween(32),
+
+    // 日期晚于
+    DateGt(33),
+
+    // 日期晚于等于
+    DateGte(34),
+
+    // 日期早于
+    DateLt(35),
+
+    // 日期早于等于
+    DateLte(36)
+
 }
 
-enum class SpliceType(val value: Int){
-    AND(1),
-    OR(2)
+enum class SpliceType(val value: Int) {
+    AND(1), OR(2)
 }
 
 //返回的错误码

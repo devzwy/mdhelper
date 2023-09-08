@@ -97,9 +97,10 @@ class FilterBean private constructor(val controlId: String,  val value: Any?, va
          */
         val values: Any?=null,
         /**
-         * 筛选类型 只能一种 使用 [io.github.devzwy.mdhelper.data.SpliceType]构造取值
+         * 筛选类型 只能一种
          */
-        val spliceType: Int) {
+        val spliceType: SpliceType = SpliceType.AND) {
+
         //字段类型
         private var dataType: Int = 0
 
@@ -119,7 +120,7 @@ class FilterBean private constructor(val controlId: String,  val value: Any?, va
         /**
          * 与下一组条件的关系为AND拼接
          */
-        fun build() = FilterBean(controlId, value, values,dataType, spliceType, filterType)
+        fun build() = FilterBean(controlId, value, values,dataType, spliceType.value, filterType)
 
     }
 }
