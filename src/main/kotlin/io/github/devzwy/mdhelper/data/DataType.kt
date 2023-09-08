@@ -21,6 +21,12 @@ enum class DataType(val value: Int) {
     //多选
     OPTION_ML(10),
 
+    //日期
+    DATE(15),
+
+    //日期时间
+    DATETIME(16),
+
     //大写金额
     AMOUNT_UP(25),
 
