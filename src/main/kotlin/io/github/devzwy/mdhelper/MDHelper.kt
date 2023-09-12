@@ -246,7 +246,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * [rowId] 行记录ID
      * @return
      */
-    internal inline fun <reified R> getRow(appName: Any? = null, worksheetId: String, rowId: String): R? {
+    inline fun <reified R> getRow(appName: Any? = null, worksheetId: String, rowId: String): R? {
         if (rowId.isEmpty() || worksheetId.isEmpty()) return null
         return HttpUtil.sendPost(
             "/api/v2/open/worksheet/getRowByIdPost".getRequestUrl(), hashMapOf<String, Any?>(
