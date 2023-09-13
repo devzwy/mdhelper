@@ -1,5 +1,7 @@
 package io.github.devzwy.mdhelper.data
 
+import java.util.ArrayList
+
 data class MDBaseResult<T>(
     val `data`: T, val error_code: Int, val error_msg: String = "", val success: Boolean
 )
@@ -83,19 +85,7 @@ data class MdControl(
     //字段值类型 提交值类型，1=外部文件链接，2=文件流字节编码 base64格式 字符串 (默认1,为1时 外部链接放在value参数中，为2时 文件流base64信息放在controlFiles参数中
     val valueType: Int = 1,
     //valueType 2 时 base64的值放在这里
-    val controlFiles: List<ExtraData>? = arrayListOf()
-)
-
-data class RowData(
-    /**
-     * 字段值
-     * isExtra为true时这里必须为数组
-     */
-    val value: Any?,
-    /**
-     * 是否附件，附件时 value的值需要使用[io.github.devzwy.mdhelper.data.ExtraData]进行构建，并且为数组
-     */
-    val isExtra: Boolean = false
+    val controlFiles: ArrayList<ExtraData?> = arrayListOf()
 )
 
 data class ExtraData(val baseFile: String, val fileName: String)

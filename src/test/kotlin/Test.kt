@@ -147,8 +147,8 @@ class Test {
     fun test_insertRow() {
         tmpRowId = mdHelper.insertRow(
             appName = APP_NAME, worksheetId = tmpTableId, triggerWorkflow = false, data = hashMapOf(
-                KEY_ACCOUNT to RowData(value = testUserAccount),
-                KEY_PSW to RowData(value = testUserPassword)
+                KEY_ACCOUNT to  testUserAccount,
+                KEY_PSW to testUserPassword
             )
         )!!
         assertNotEquals(tmpRowId, "")
@@ -168,7 +168,7 @@ class Test {
     fun test_updateRow() {
         val isUpdateSucc = mdHelper.updateRow(
             appName = APP_NAME, worksheetId = tmpTableId, rowId = tmpRowId, triggerWorkflow = false, data = hashMapOf(
-                KEY_PSW to RowData(testUserNewPassword)
+                KEY_PSW to testUserNewPassword
             )
         )!!
         assert(isUpdateSucc)

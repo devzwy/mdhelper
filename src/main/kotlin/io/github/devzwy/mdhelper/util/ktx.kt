@@ -1,16 +1,20 @@
 package io.github.devzwy.mdhelper.util
 
 import io.github.devzwy.mdhelper.data.ExtraData
-import io.github.devzwy.mdhelper.data.MDRowData
 import io.github.devzwy.mdhelper.data.MdControl
-import io.github.devzwy.mdhelper.data.RowData
 
-fun HashMap<String, RowData?>.toRowDataList() = arrayListOf<MdControl>().also {
+fun HashMap<String, Any?>.toRowDataList() = arrayListOf<MdControl>().also {
     forEach { (key, rowData) ->
         if (rowData != null) {
-            if (rowData.isExtra) {
+            if (rowData is List<*> && rowData.isNotEmpty() && rowData[0] is ExtraData) {
                 //附件
-                it.add(MdControl(controlId = key, value = null, valueType = 2, controlFiles = rowData.value as? List<ExtraData>))
+                val arr = arrayListOf<ExtraData?>()
+                rowData.forEach {
+                    arr.add(it as? ExtraData)
+                }
+                it.add(MdControl(controlId = key, value = null, valueType = 2, controlFiles = arr))
+            }else{
+                it.add(MdControl(controlId = key, value = rowData))
             }
         } else {
             it.add(MdControl(controlId = key, value = null))
