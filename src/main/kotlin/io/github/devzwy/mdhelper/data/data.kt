@@ -75,14 +75,32 @@ class FilterData(
 )
 
 //行数据
-data class RowData(
+data class MdControl(
     //字段ID
     val controlId: String,
     //字段值
-    val value: Any?
+    val value: Any?,
+    //字段值类型 提交值类型，1=外部文件链接，2=文件流字节编码 base64格式 字符串 (默认1,为1时 外部链接放在value参数中，为2时 文件流base64信息放在controlFiles参数中
+    val valueType: Int = 1,
+    //valueType 2 时 base64的值放在这里
+    val controlFiles: List<ExtraData> = arrayListOf()
 )
 
-class FilterBean private constructor(val controlId: String,  val value: Any?, val values: Any?,  val dataType: Int,  val spliceType: Int,  val filterType: Int) {
+data class RowData(
+    /**
+     * 字段值
+     * isExtra为true时这里必须为数组
+     */
+    val value: Any?,
+    /**
+     * 是否附件，附件时 value的值需要使用[io.github.devzwy.mdhelper.data.ExtraData]进行构建，并且为数组
+     */
+    val isExtra: Boolean = false
+)
+
+data class ExtraData(val baseFile: String, val fileName: String)
+
+class FilterBean private constructor(val controlId: String, val value: Any?, val values: Any?, val dataType: Int, val spliceType: Int, val filterType: Int) {
     class Builder(
         /**
          * 字段名称
@@ -91,15 +109,16 @@ class FilterBean private constructor(val controlId: String,  val value: Any?, va
         /**
          * 单个值
          */
-        private val value: Any? = null ,
+        private val value: Any? = null,
         /**
          * 多个值
          */
-        val values: Any?=null,
+        val values: Any? = null,
         /**
          * 筛选类型 只能一种
          */
-        val spliceType: SpliceType = SpliceType.AND) {
+        val spliceType: SpliceType = SpliceType.AND
+    ) {
 
         //字段类型
         private var dataType: Int = 0
@@ -120,7 +139,7 @@ class FilterBean private constructor(val controlId: String,  val value: Any?, va
         /**
          * 与下一组条件的关系为AND拼接
          */
-        fun build() = FilterBean(controlId, value, values,dataType, spliceType.value, filterType)
+        fun build() = FilterBean(controlId, value, values, dataType, spliceType.value, filterType)
 
     }
 }

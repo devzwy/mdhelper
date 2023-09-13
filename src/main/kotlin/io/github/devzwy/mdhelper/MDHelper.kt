@@ -227,7 +227,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * [data] 写入的列数据
      * @return 成功时返回写入记录的行ID 否则为空
      */
-    fun insertRow(appName: Any? = null, worksheetId: String, triggerWorkflow: Boolean? = null, data: HashMap<String, Any?>): String? {
+    fun insertRow(appName: Any? = null, worksheetId: String, triggerWorkflow: Boolean? = null, data: HashMap<String, RowData?>): String? {
         if (data.isEmpty() || worksheetId.isEmpty()) return null
         return HttpUtil.sendPost(
             "/api/v2/open/worksheet/addRow".getRequestUrl(), hashMapOf<String, Any?>(
@@ -265,7 +265,7 @@ class MDHelper private constructor(private val baseUrl: String, private val conf
      * [rowId] 更新的行记录ID
      * @return 成功时返回true，否则返回null
      */
-    fun updateRow(appName: Any? = null, worksheetId: String, rowId: String, triggerWorkflow: Boolean? = null, data: HashMap<String, Any?>): Boolean? {
+    fun updateRow(appName: Any? = null, worksheetId: String, rowId: String, triggerWorkflow: Boolean? = null, data: HashMap<String, RowData?>): Boolean? {
         if (data.isEmpty() || worksheetId.isEmpty() || rowId.isEmpty()) return null
 
         return HttpUtil.sendPost(

@@ -11,13 +11,13 @@
 <dependency>
   <groupId>io.github.devzwy</groupId>
   <artifactId>mdhelper</artifactId>
-  <version>2.2.3</version>
+  <version>2.2.4</version>
 </dependency>
 ```
 
 - Gradle
 ```
-implementation("io.github.devzwy:mdhelper:2.2.3")
+implementation("io.github.devzwy:mdhelper:2.2.4")
 ```
 
 ## 开始使用

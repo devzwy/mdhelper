@@ -20,7 +20,6 @@ import kotlin.test.assertNotNull
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 class Test {
 
-
     companion object {
 
         //TODO 修改这里的参数进行测试
@@ -148,8 +147,8 @@ class Test {
     fun test_insertRow() {
         tmpRowId = mdHelper.insertRow(
             appName = APP_NAME, worksheetId = tmpTableId, triggerWorkflow = false, data = hashMapOf(
-                KEY_ACCOUNT to testUserAccount,
-                KEY_PSW to testUserPassword
+                KEY_ACCOUNT to RowData(value = testUserAccount),
+                KEY_PSW to RowData(value = testUserPassword)
             )
         )!!
         assertNotEquals(tmpRowId, "")
@@ -169,7 +168,7 @@ class Test {
     fun test_updateRow() {
         val isUpdateSucc = mdHelper.updateRow(
             appName = APP_NAME, worksheetId = tmpTableId, rowId = tmpRowId, triggerWorkflow = false, data = hashMapOf(
-                KEY_PSW to testUserNewPassword
+                KEY_PSW to RowData(testUserNewPassword)
             )
         )!!
         assert(isUpdateSucc)
@@ -189,11 +188,11 @@ class Test {
                     FilterBean.Builder(KEY_ACCOUNT, testUserAccount)
                         .typeOf(DataType.TEXT.value)
                         .filterOf(FilterType.Eq.value)
-                        .buildAnd(),
+                        .build(),
                     FilterBean.Builder(KEY_PSW, testUserNewPassword)
                         .typeOf(DataType.NUMBER.value)
                         .filterOf(FilterType.Eq.value)
-                        .buildAnd()
+                        .build()
                 )
             )
         )!!
