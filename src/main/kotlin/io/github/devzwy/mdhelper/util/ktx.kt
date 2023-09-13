@@ -10,10 +10,10 @@ fun HashMap<String, RowData?>.toRowDataList() = arrayListOf<MdControl>().also {
         if (rowData != null) {
             if (rowData.isExtra) {
                 //附件
-                it.add(MdControl(controlId = key, value = null, valueType = 2, controlFiles = rowData.value as List<ExtraData>))
+                it.add(MdControl(controlId = key, value = null, valueType = 2, controlFiles = rowData.value as? List<ExtraData>))
             }
         } else {
-            it.add(MdControl(controlId = key, value = rowData?.value))
+            it.add(MdControl(controlId = key, value = null))
         }
     }
 }

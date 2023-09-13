@@ -83,7 +83,7 @@ data class MdControl(
     //字段值类型 提交值类型，1=外部文件链接，2=文件流字节编码 base64格式 字符串 (默认1,为1时 外部链接放在value参数中，为2时 文件流base64信息放在controlFiles参数中
     val valueType: Int = 1,
     //valueType 2 时 base64的值放在这里
-    val controlFiles: List<ExtraData> = arrayListOf()
+    val controlFiles: List<ExtraData>? = arrayListOf()
 )
 
 data class RowData(
