@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.github.devzwy"
-version = "2.2.5"
+version = "3.0.1"
 
 val sourceJar by tasks.registering(Jar::class) {
     from(sourceSets["main"].allSource)
@@ -102,10 +102,7 @@ configure<SigningExtension> {
 
 dependencies {
     testImplementation(kotlin("test"))
-//    implementation("com.alibaba:fastjson:2.0.32")
-    implementation("com.google.code.gson:gson:2.10.1")
-    implementation("com.squareup.okhttp3:okhttp:4.11.0")
-//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    implementation("com.alibaba:fastjson:2.0.46")
 }
 
 tasks.test {
