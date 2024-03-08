@@ -1,11 +1,16 @@
 package io.github.devzwy.mdhelper
 
+import com.alibaba.fastjson2.JSON
 import io.github.devzwy.mdhelper.data.RowBaseResult
 import io.github.devzwy.mdhelper.manager.ApiManager
 import io.github.devzwy.mdhelper.manager.ConfigManager
 import io.github.devzwy.mdhelper.utils.MdDataControl
 import io.github.devzwy.mdhelper.utils.MdFilterControl
 import com.alibaba.fastjson2.TypeReference
+import io.github.devzwy.mdhelper.data.BaseResult
+import io.github.devzwy.mdhelper.data.MdAppInfo
+import io.github.devzwy.mdhelper.data.MdTableInfo
+import io.github.devzwy.mdhelper.utils.MDUtil.toJson
 
 /**
  * 明道工具类
@@ -40,7 +45,7 @@ class MDHelper private constructor() {
 
 
     /**
-     * 获取列表
+     * 获取列表 传入接收单个row的实体，一些公用的参数(明道基础字段)封装在了[io.github.devzwy.mdhelper.data.Row]类，如有需要可以自行继承
      * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
      * [appConfigKey] 应用的配置Key，为空时取第一个添加的应用配置，如果未添加过应用配置则抛出异常
      * [tableId] 操作的表ID，可以为别名或者明道生成的ID
@@ -68,7 +73,7 @@ class MDHelper private constructor() {
         notGetTotal: Boolean? = null,
         useControlId: Boolean? = null,
         clazz: Class<T>,
-    ) = ApiManager.getRows(baseUrlKey, appConfigKey, tableId, filter, pageSize, pageIndex, viewId, sortId, isAsc, notGetTotal, useControlId,clazz)
+    ) = ApiManager.getRows(baseUrlKey, appConfigKey, tableId, filter, pageSize, pageIndex, viewId, sortId, isAsc, notGetTotal, useControlId, clazz)
 
     /**
      * 删除行记录
@@ -103,7 +108,7 @@ class MDHelper private constructor() {
      * [rowId] 行记录ID
      * @return 行记录数据JSON
      */
-    fun <T> getRow(baseUrlKey: String? = null, appConfigKey: String? = null, tableId: String, rowId: String,clazz:Class<T>) = ApiManager.getRow(baseUrlKey, appConfigKey, tableId, rowId,clazz)
+    fun <T> getRow(baseUrlKey: String? = null, appConfigKey: String? = null, tableId: String, rowId: String, clazz: Class<T>) = ApiManager.getRow(baseUrlKey, appConfigKey, tableId, rowId, clazz)
 
     /**
      * 插入多行记录，最大1000行
@@ -140,11 +145,30 @@ class MDHelper private constructor() {
     fun getTableInfo(baseUrlKey: String? = null, appConfigKey: String? = null, tableId: String) = ApiManager.getTableInfo(baseUrlKey, appConfigKey, tableId)
 
     /**
+     * 获取表结构信息
+     * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
+     * [appKey] 应用的appkey
+     * [sign] 应用的签名
+     * [tableId] 操作的表ID，可以为别名或者明道生成的ID
+     * @return 表结构信息[MdTableInfo]
+     */
+    fun getTableInfo(baseUrlKey: String? = null, appKey: String, sign: String, tableId: String) = ApiManager.getTableInfo(baseUrlKey, appKey, sign, tableId)
+
+    /**
      * 获取应用数据
      * [appConfigKey] 应用的配置Key，为空时取第一个添加的应用配置，如果未添加过应用配置则抛出异常
      * @return 返回应用信息
      */
     fun getAppInfo(baseUrlKey: String? = null, appConfigKey: String? = null) = ApiManager.getAppInfo(baseUrlKey, appConfigKey)
+
+    /**
+     * 获取应用数据
+     * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
+     * [appKey] 应用的appkey
+     * [sign] 应用的签名
+     * @return 返回应用信息
+     */
+    fun getAppInfo(baseUrlKey: String? = null, appKey: String, sign: String) = ApiManager.getAppInfo(baseUrlKey, appKey, sign)
 
     /**
      * 开启日志打印

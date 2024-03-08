@@ -46,7 +46,7 @@ internal object ApiManager {
     private const val URL_FILTER_ROW = "/api/v2/open/worksheet/getFilterRows"
 
     /**
-     * 获取列表
+     * 获取列表 传入接收单个row的实体，一些公用的参数(明道基础字段)封装在了[io.github.devzwy.mdhelper.data.Row]类，如有需要可以自行继承
      * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
      * [appConfigKey] 应用的配置Key，为空时取第一个添加的应用配置，如果未添加过应用配置则抛出异常
      * [tableId] 操作的表ID，可以为别名或者明道生成的ID
@@ -80,8 +80,7 @@ internal object ApiManager {
         val appConfig = getAppConfig(appConfigKey)
 
         val requestData = hashMapOf(
-            "appKey" to appConfig.appKey, "sign" to appConfig.sign,
-            "worksheetId" to tableId, "filters" to filter.filters
+            "appKey" to appConfig.appKey, "sign" to appConfig.sign, "worksheetId" to tableId, "filters" to filter.filters
         )
 
         viewId?.let { requestData.put("viewId", it) }
@@ -134,8 +133,7 @@ internal object ApiManager {
         val appConfig = getAppConfig(appConfigKey)
 
         val requestData = hashMapOf(
-            "appKey" to appConfig.appKey, "sign" to appConfig.sign,
-            "worksheetId" to tableId, "rowId" to rowId, "triggerWorkflow" to triggerWorkflow
+            "appKey" to appConfig.appKey, "sign" to appConfig.sign, "worksheetId" to tableId, "rowId" to rowId, "triggerWorkflow" to triggerWorkflow
         )
         val resultStr = HttpClientUtil.post(url, requestData.toJson())
         //解析数据
@@ -163,8 +161,7 @@ internal object ApiManager {
         val appConfig = getAppConfig(appConfigKey)
 
         val requestData = hashMapOf(
-            "appKey" to appConfig.appKey, "sign" to appConfig.sign,
-            "worksheetId" to tableId, "rows" to dataList.flatMap { arrayListOf(it.controls) }, "triggerWorkflow" to triggerWorkflow
+            "appKey" to appConfig.appKey, "sign" to appConfig.sign, "worksheetId" to tableId, "rows" to dataList.flatMap { arrayListOf(it.controls) }, "triggerWorkflow" to triggerWorkflow
         )
         val resultStr = HttpClientUtil.post(url, requestData.toJson())
         //解析数据
@@ -220,8 +217,7 @@ internal object ApiManager {
         val appConfig = getAppConfig(appConfigKey)
 
         val requestData = hashMapOf(
-            "appKey" to appConfig.appKey, "sign" to appConfig.sign, "worksheetId" to tableId, "rowId" to rowId,
-            "controls" to data.controls, "triggerWorkflow" to triggerWorkflow
+            "appKey" to appConfig.appKey, "sign" to appConfig.sign, "worksheetId" to tableId, "rowId" to rowId, "controls" to data.controls, "triggerWorkflow" to triggerWorkflow
         )
         val resultStr = HttpClientUtil.post(url, requestData.toJson())
         //解析数据
@@ -274,12 +270,24 @@ internal object ApiManager {
      * @return 表结构信息JSOn
      */
     fun getTableInfo(baseUrlKey: String? = null, appConfigKey: String? = null, tableId: String): MdTableInfo {
-        val url = getUrl(baseUrlKey, URL_TABLE_INFO)
         val appConfig = getAppConfig(appConfigKey)
-        val requestData = hashMapOf("appKey" to appConfig.appKey, "sign" to appConfig.sign, "worksheetId" to tableId)
+        return getTableInfo(baseUrlKey, appConfig.appKey, appConfig.sign, tableId)
+    }
+
+    /**
+     * 获取表结构信息
+     * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
+     * [appKey] 应用的appkey
+     * [sign] 应用的签名
+     * [tableId] 操作的表ID，可以为别名或者明道生成的ID
+     * @return 表结构信息[MdTableInfo]
+     */
+    fun getTableInfo(baseUrlKey: String? = null, appKey: String, sign: String, tableId: String): MdTableInfo {
+        val url = getUrl(baseUrlKey, URL_TABLE_INFO)
+        val requestData = hashMapOf("appKey" to appKey, "sign" to sign, "worksheetId" to tableId)
         val resultStr = HttpClientUtil.post(url, requestData.toJson())
 
-        val result = JSON.parseObject(resultStr,object : TypeReference<BaseResult<MdTableInfo>>() {})
+        val result = JSON.parseObject(resultStr, object : TypeReference<BaseResult<MdTableInfo>>() {})
 
         return if (ErrorCodeEnum.fromCode(result.error_code) == ErrorCodeEnum.SUCCESS) {
             result.data!!
@@ -296,9 +304,19 @@ internal object ApiManager {
      */
     fun getAppInfo(baseUrlKey: String? = null, appConfigKey: String? = null): MdAppInfo {
         val appInfo = ConfigManager.getAppConfig(appConfigKey)
-        val resultStr = HttpClientUtil.get(
-            "${ConfigManager.getBaseUrl(baseUrlKey)}${URL_APP_INFO}", hashMapOf("appKey" to appInfo.appKey, "sign" to appInfo.sign)
-        )
+        return getAppInfo(baseUrlKey, appInfo.appKey, appInfo.sign)
+    }
+
+    /**
+     * 获取应用数据
+     * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
+     * [appKey] 应用的appkey
+     * [sign] 应用的签名
+     * @return 返回应用信息
+     */
+    fun getAppInfo(baseUrlKey: String? = null, appKey: String, sign: String): MdAppInfo {
+
+        val resultStr = HttpClientUtil.get("${ConfigManager.getBaseUrl(baseUrlKey)}${URL_APP_INFO}", hashMapOf("appKey" to appKey, "sign" to sign))
 
         //解析数据
         val result = JSON.parseObject(resultStr, object : TypeReference<BaseResult<MdAppInfo>>() {})
