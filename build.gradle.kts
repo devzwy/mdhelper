@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.github.devzwy"
-version = "3.0.3"
+version = "3.0.4"
 
 val sourceJar by tasks.registering(Jar::class) {
     from(sourceSets["main"].allSource)

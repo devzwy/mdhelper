@@ -1,16 +1,11 @@
 package io.github.devzwy.mdhelper
 
-import com.alibaba.fastjson2.JSON
+import io.github.devzwy.mdhelper.data.MdTableInfo
 import io.github.devzwy.mdhelper.data.RowBaseResult
 import io.github.devzwy.mdhelper.manager.ApiManager
 import io.github.devzwy.mdhelper.manager.ConfigManager
 import io.github.devzwy.mdhelper.utils.MdDataControl
 import io.github.devzwy.mdhelper.utils.MdFilterControl
-import com.alibaba.fastjson2.TypeReference
-import io.github.devzwy.mdhelper.data.BaseResult
-import io.github.devzwy.mdhelper.data.MdAppInfo
-import io.github.devzwy.mdhelper.data.MdTableInfo
-import io.github.devzwy.mdhelper.utils.MDUtil.toJson
 
 /**
  * 明道工具类
@@ -76,6 +71,39 @@ class MDHelper private constructor() {
     ) = ApiManager.getRows(baseUrlKey, appConfigKey, tableId, filter, pageSize, pageIndex, viewId, sortId, isAsc, notGetTotal, useControlId, clazz)
 
     /**
+     * 获取列表 传入接收单个row的实体，一些公用的参数(明道基础字段)封装在了[io.github.devzwy.mdhelper.data.Row]类，如有需要可以自行继承
+     * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
+     * [appKey] 应用的appkey
+     * [sign] 应用的签名
+     * [tableId] 操作的表ID，可以为别名或者明道生成的ID
+     * [filter] 过滤条件，使用[MdFilterControl.Builder]构造多个
+     * [pageSize] 行数
+     * [pageIndex] 页码
+     * [viewId] 视图ID
+     * [sortId] 排序字段ID
+     * [isAsc] 是否升序
+     * [notGetTotal] 是否不统计总行数以提高性能(默认: false)
+     * [useControlId] 是否只返回controlId(默认: false)
+     * [clazz] 最终列表的每个实体的接收对象
+     * @return 过滤后的数据[RowBaseResult]
+     */
+    fun <T> getRows(
+        baseUrlKey: String? = null,
+        appKey: String,
+        sign: String,
+        tableId: String,
+        filter: MdFilterControl,
+        pageSize: Int? = null,
+        pageIndex: Int? = null,
+        viewId: String? = null,
+        sortId: String? = null,
+        isAsc: Boolean? = null,
+        notGetTotal: Boolean? = null,
+        useControlId: Boolean? = null,
+        clazz: Class<T>
+    ) = ApiManager.getRows(baseUrlKey, appKey, sign, tableId, filter, pageSize, pageIndex, viewId, sortId, isAsc, notGetTotal, useControlId, clazz)
+
+    /**
      * 删除行记录
      * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
      * [appConfigKey] 应用的配置Key，为空时取第一个添加的应用配置，如果未添加过应用配置则抛出异常
@@ -109,6 +137,18 @@ class MDHelper private constructor() {
      * @return 行记录数据JSON
      */
     fun <T> getRow(baseUrlKey: String? = null, appConfigKey: String? = null, tableId: String, rowId: String, clazz: Class<T>) = ApiManager.getRow(baseUrlKey, appConfigKey, tableId, rowId, clazz)
+
+    /**
+     * 获取行记录详情
+     * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
+     * [appKey] 应用的appkey
+     * [sign] 应用的签名
+     * [tableId] 操作的表ID，可以为别名或者明道生成的ID
+     * [rowId] 行记录ID
+     * @return 行记录数据JSON
+     */
+    fun <T> getRow(baseUrlKey: String? = null, appKey: String, sign: String, tableId: String, rowId: String, clazz: Class<T>) = ApiManager.getRow(baseUrlKey, appKey, sign, tableId, rowId, clazz)
+
 
     /**
      * 插入多行记录，最大1000行
