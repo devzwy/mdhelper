@@ -23,6 +23,11 @@ class MdFilterControl private constructor(val filters: List<HashMap<String, Any?
             return this
         }
 
+        /**
+         * 获取已添加的过滤字段数量
+         */
+        fun size() = list.size
+
         fun build(): MdFilterControl {
             return MdFilterControl(list)
         }

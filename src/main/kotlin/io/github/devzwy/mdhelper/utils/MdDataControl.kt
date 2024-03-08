@@ -66,6 +66,11 @@ class MdDataControl private constructor(val controls: List<HashMap<String, Any?>
             return this
         }
 
+        /**
+         * 获取已添加的字段数量
+         */
+        fun size() = list.size
+
         fun build(): MdDataControl {
             return MdDataControl(list)
         }
