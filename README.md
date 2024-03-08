@@ -258,7 +258,6 @@ fun getAppInfo(baseUrlKey: String? = null, appConfigKey: String? = null): MdAppI
 
 ## 一些实体类
 ```
-package io.github.devzwy.mdhelper.data
 
 open class RowBaseResult<T> {
     var rows: List<T> = arrayListOf()
@@ -341,10 +340,10 @@ open class MdSectionItem{
 ```
 MdFilterControl.Build().xxxx.build()
 ```
-### 添加过滤字段字段
+### 添加过滤字段
 ```
 /**
- * 添加过滤字段字段
+ * 添加过滤字段
  * [controlId] 字段
  * [value] 值
  * [filterType] 过滤类型 使用[FilterTypeEnum]构造
@@ -383,10 +382,10 @@ fun addMulti(
 ): Builder
 ```
 
-### 添加选项字段
+### 添加选项卡字段
 ```
 /**
- * 添加选项字段
+ * 添加选项卡字段
  * [controlId] 键
  * [data] 值
  * [dataType] 使用[OptionDataType]构造，[OptionDataType.NOT_ADD]不增加选项，[OptionDataType.ADD]允许增加选项（默认为[OptionDataType.NOT_ADD]，为[OptionDataType.NOT_ADD]时匹配不到已有选项时传入空，为[OptionDataType.ADD]时，匹配不到时会创建新选项并写入）
@@ -567,10 +566,10 @@ enum class MuliEditType private constructor(val type:Int) {
 }
 ```
 
-### 选项的操作的类型
+### 选项卡的操作类型
 ```
 /**
- * 选项的操作的类型
+ * 选项卡的操作类型
  */
 enum class OptionDataType private constructor(val type:Int) {
     NOT_ADD(1),
