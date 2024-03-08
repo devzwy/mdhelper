@@ -74,5 +74,4 @@ open class MdSectionItem{
     var iconUrl:String = ""
     var status:Int = -1
     var alias:String = ""
-
 }
