@@ -160,11 +160,24 @@ internal object ApiManager {
      * @return 删除成功返回true 否则返回false
      */
     fun deleteRow(baseUrlKey: String? = null, appConfigKey: String? = null, tableId: String, rowId: String, triggerWorkflow: Boolean = true): Boolean {
-        val url = getUrl(baseUrlKey, URL_DEL_ROW)
         val appConfig = getAppConfig(appConfigKey)
+        return deleteRow(baseUrlKey, appConfig.appKey, appConfig.sign, tableId, rowId, triggerWorkflow)
+    }
 
+    /**
+     * 删除行记录
+     * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
+     * [appKey] 应用的appkey
+     * [sign] 应用的签名
+     * [tableId] 操作的表ID，可以为别名或者明道生成的ID
+     * [rowId] 删除行的Id
+     * [triggerWorkflow] 是否触发工作流(默认: true)
+     * @return 删除成功返回true 否则返回false
+     */
+    fun deleteRow(baseUrlKey: String? = null, appKey: String, sign: String, tableId: String, rowId: String, triggerWorkflow: Boolean = true): Boolean {
+        val url = getUrl(baseUrlKey, URL_DEL_ROW)
         val requestData = hashMapOf(
-            "appKey" to appConfig.appKey, "sign" to appConfig.sign, "worksheetId" to tableId, "rowId" to rowId, "triggerWorkflow" to triggerWorkflow
+            "appKey" to appKey, "sign" to sign, "worksheetId" to tableId, "rowId" to rowId, "triggerWorkflow" to triggerWorkflow
         )
         val resultStr = HttpClientUtil.post(url, requestData.toJson())
         //解析数据
@@ -177,6 +190,7 @@ internal object ApiManager {
         }
     }
 
+
     /**
      * 插入多行记录，最大1000行
      * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
@@ -188,11 +202,28 @@ internal object ApiManager {
      */
     fun insertRows(baseUrlKey: String? = null, appConfigKey: String? = null, tableId: String, dataList: List<MdDataControl>, triggerWorkflow: Boolean = true): Int {
 
-        val url = getUrl(baseUrlKey, URL_ADD_ROWS)
         val appConfig = getAppConfig(appConfigKey)
 
+        return insertRows(baseUrlKey, appConfig.appKey, appConfig.sign, tableId, dataList, triggerWorkflow)
+    }
+
+
+    /**
+     * 插入多行记录，最大1000行
+     * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
+     * [appKey] 应用的appkey
+     * [sign] 应用的签名
+     * [tableId] 操作的表ID，可以为别名或者明道生成的ID
+     * [dataList] 写入的数据列，使用[MdDataControl.Builder]构造多个
+     * [triggerWorkflow] 是否触发工作流(默认: true)
+     * @return 写入成功后回传写入成功的总行数
+     */
+    fun insertRows(baseUrlKey: String? = null, appKey: String, sign: String, tableId: String, dataList: List<MdDataControl>, triggerWorkflow: Boolean = true): Int {
+
+        val url = getUrl(baseUrlKey, URL_ADD_ROWS)
+
         val requestData = hashMapOf(
-            "appKey" to appConfig.appKey, "sign" to appConfig.sign, "worksheetId" to tableId, "rows" to dataList.flatMap { arrayListOf(it.controls) }, "triggerWorkflow" to triggerWorkflow
+            "appKey" to appKey, "sign" to sign, "worksheetId" to tableId, "rows" to dataList.flatMap { arrayListOf(it.controls) }, "triggerWorkflow" to triggerWorkflow
         )
         val resultStr = HttpClientUtil.post(url, requestData.toJson())
         //解析数据
@@ -216,11 +247,25 @@ internal object ApiManager {
      * @return 写入成功后回传写入的行ID
      */
     fun insertRow(baseUrlKey: String? = null, appConfigKey: String? = null, tableId: String, data: MdDataControl, triggerWorkflow: Boolean = true): String {
+        val appConfig = getAppConfig(appConfigKey)
+        return insertRow(baseUrlKey, appConfig.appKey, appConfig.sign, tableId, data, triggerWorkflow)
+    }
+
+    /**
+     * 插入单行记录
+     * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
+     * [appKey] 应用的appkey
+     * [sign] 应用的签名
+     * [tableId] 操作的表ID，可以为别名或者明道生成的ID
+     * [data] 写入的数据列，使用[MdDataControl.Builder]构造
+     * [triggerWorkflow] 是否触发工作流(默认: true)
+     * @return 写入成功后回传写入的行ID
+     */
+    fun insertRow(baseUrlKey: String? = null, appKey: String, sign: String, tableId: String, data: MdDataControl, triggerWorkflow: Boolean = true): String {
 
         val url = getUrl(baseUrlKey, URL_ADD_ROW)
-        val appConfig = getAppConfig(appConfigKey)
 
-        val requestData = hashMapOf("appKey" to appConfig.appKey, "sign" to appConfig.sign, "worksheetId" to tableId, "controls" to data.controls, "triggerWorkflow" to triggerWorkflow)
+        val requestData = hashMapOf("appKey" to appKey, "sign" to sign, "worksheetId" to tableId, "controls" to data.controls, "triggerWorkflow" to triggerWorkflow)
         val resultStr = HttpClientUtil.post(url, requestData.toJson())
         //解析数据
         val result = JSON.parseObject(resultStr, object : TypeReference<BaseResult<String>>() {})
@@ -231,6 +276,7 @@ internal object ApiManager {
             throw RuntimeException("获取应用数据请求失败，明道回传了失败的结果：${ErrorCodeEnum.fromCode(result.error_code).description}")
         }
     }
+
 
     /**
      * 编辑行记录
@@ -244,11 +290,29 @@ internal object ApiManager {
      */
     fun updateRow(baseUrlKey: String? = null, appConfigKey: String? = null, tableId: String, rowId: String, data: MdDataControl, triggerWorkflow: Boolean = true): Boolean {
 
-        val url = getUrl(baseUrlKey, URL_EDIT_ROW)
         val appConfig = getAppConfig(appConfigKey)
 
+        return updateRow(baseUrlKey, appConfig.appKey, appConfig.sign, tableId, rowId, data)
+    }
+
+
+    /**
+     * 编辑行记录
+     * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
+     * [appKey] 应用的appkey
+     * [sign] 应用的签名
+     * [tableId] 操作的表ID，可以为别名或者明道生成的ID
+     * [rowId] 行记录ID
+     * [data] 更新的数据列，使用[MdDataControl.Builder]构造
+     * [triggerWorkflow] 是否触发工作流(默认: true)
+     * @return 编辑成功返回true，否则返回false
+     */
+    fun updateRow(baseUrlKey: String? = null, appKey: String, sign: String, tableId: String, rowId: String, data: MdDataControl, triggerWorkflow: Boolean = true): Boolean {
+
+        val url = getUrl(baseUrlKey, URL_EDIT_ROW)
+
         val requestData = hashMapOf(
-            "appKey" to appConfig.appKey, "sign" to appConfig.sign, "worksheetId" to tableId, "rowId" to rowId, "controls" to data.controls, "triggerWorkflow" to triggerWorkflow
+            "appKey" to appKey, "sign" to sign, "worksheetId" to tableId, "rowId" to rowId, "controls" to data.controls, "triggerWorkflow" to triggerWorkflow
         )
         val resultStr = HttpClientUtil.post(url, requestData.toJson())
         //解析数据
