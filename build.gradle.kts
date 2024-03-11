@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.github.devzwy"
-version = "3.0.6"
+version = "3.0.7"
 
 val sourceJar by tasks.registering(Jar::class) {
     from(sourceSets["main"].allSource)
@@ -102,7 +102,7 @@ configure<SigningExtension> {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("com.alibaba:fastjson:2.0.46")
+    implementation("com.alibaba.fastjson2:fastjson2:2.0.47")
 }
 
 tasks.test {

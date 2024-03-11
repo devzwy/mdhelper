@@ -16,14 +16,15 @@
 <dependency>
   <groupId>io.github.devzwy</groupId>
   <artifactId>mdhelper</artifactId>
-  <version>3.0.6</version>
+  <version>3.0.7</version>
 </dependency>
 ```
 
 - Gradle
 
 ```
-implementation("io.github.devzwy:mdhelper:3.0.6")
+implementation("io.github.devzwy:mdhelper:3.0.7")
+implementation("com.alibaba.fastjson2:fastjson2:2.0.47")
 ```
 
 ## Api列表
