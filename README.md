@@ -10,6 +10,22 @@
 
 ### [latest version](https://central.sonatype.com/artifact/io.github.devzwy/mdhelper)
 
+### Android版本依赖参考
+
+> 解决工具类在安卓端解析数据时引起的闪退问题。引入下面的依赖即可，不需要再引入Java/Kotlin依赖部分。
+
+```
+implementation 'com.alibaba.fastjson2:fastjson2:2.0.47.android5'
+
+//明道云工具类
+implementation('io.github.devzwy:mdhelper:3.0.6') {
+        exclude group: 'com.alibaba.fastjson2', module: 'fastjson2'
+}
+
+```
+
+### Java/kotlin 依赖
+
 - Maven
 
 ```
@@ -108,13 +124,13 @@ fun removeAppByConfigKey(configKey: String)
 fun getAppConfig(appConfigKey: String?): AppConfig
 ```
 
-###  移除全部应用配置
+### 移除全部应用配置
 
 ```
 fun removeAllAppConfigs()
 ```
 
-###  获取全部应用配置
+### 获取全部应用配置
 
 ```
 /**
@@ -123,7 +139,7 @@ fun removeAllAppConfigs()
 fun getAllAppConfigs():ConcurrentSkipListMap
 ```
 
-###  获取列表
+### 获取列表
 
 ```
 /**
@@ -158,7 +174,7 @@ fun <T> getRows(
 ): RowBaseResult<T>
 ```
 
-###  删除行记录
+### 删除行记录
 
 ```
 /**
@@ -173,7 +189,7 @@ fun <T> getRows(
 fun deleteRow(baseUrlKey: String? = null, appConfigKey: String? = null, tableId: String, rowId: String, triggerWorkflow: Boolean = true): Boolean
 ```
 
-###  插入单行记录
+### 插入单行记录
 
 ```
 /**
@@ -188,7 +204,7 @@ fun deleteRow(baseUrlKey: String? = null, appConfigKey: String? = null, tableId:
 fun insertRow(baseUrlKey: String? = null, appConfigKey: String? = null, tableId: String, data: MdDataControl, triggerWorkflow: Boolean = true): String
 ```
 
-###  插入多行记录
+### 插入多行记录
 
 ```
 /**
@@ -204,6 +220,7 @@ fun insertRows(baseUrlKey: String? = null, appConfigKey: String? = null, tableId
 ```
 
 ### 编辑行记录
+
 ```
 /**
  * 编辑行记录
@@ -218,8 +235,8 @@ fun insertRows(baseUrlKey: String? = null, appConfigKey: String? = null, tableId
 fun updateRow(baseUrlKey: String? = null, appConfigKey: String? = null, tableId: String, rowId: String, data: MdDataControl, triggerWorkflow: Boolean = true): Boolean
 ```
 
-
 ### 获取行记录详情
+
 ```
 /**
  * 获取行记录详情
@@ -232,8 +249,8 @@ fun updateRow(baseUrlKey: String? = null, appConfigKey: String? = null, tableId:
 fun <T> getRow(baseUrlKey: String? = null, appConfigKey: String? = null, tableId: String, rowId: String, clazz: Class<T>): T 
 ```
 
-
 ### 获取表结构信息
+
 ```
 /**
  * 获取表结构信息
@@ -245,8 +262,8 @@ fun <T> getRow(baseUrlKey: String? = null, appConfigKey: String? = null, tableId
 fun getTableInfo(baseUrlKey: String? = null, appConfigKey: String? = null, tableId: String): MdTableInfo
 ```
 
-
 ### 获取应用数据
+
 ```
 /**
  * 获取应用数据
@@ -258,6 +275,7 @@ fun getAppInfo(baseUrlKey: String? = null, appConfigKey: String? = null): MdAppI
 ```
 
 ## 一些实体类
+
 ```
 
 open class RowBaseResult<T> {
@@ -338,10 +356,13 @@ open class MdSectionItem{
 ```
 
 ## 过滤器
+
 ```
 MdFilterControl.Build().xxxx.build()
 ```
+
 ### 添加过滤字段
+
 ```
 /**
  * 添加过滤字段
@@ -353,11 +374,15 @@ MdFilterControl.Build().xxxx.build()
  */
 fun addFilter(controlId: String, value: String, filterType: FilterTypeEnum, dataType: DataTypeEnum = DataTypeEnum.TEXT_SINGLE_LINE, spliceType: SpliceTypeEnum = SpliceTypeEnum.AND): Builder
 ```
+
 ## 数据添加器
+
 ```
 MdDataControl.Build().xxxx.build()
 ```
+
 ### 添加普通的字段
+
 ```
 /**
  * 添加普通的字段
@@ -366,6 +391,7 @@ MdDataControl.Build().xxxx.build()
  */
 fun addControl(controlId: String, data: String?): Builder
 ```
+
 ### 添加附件字段
 
 ```
@@ -384,6 +410,7 @@ fun addMulti(
 ```
 
 ### 添加选项卡字段
+
 ```
 /**
  * 添加选项卡字段
@@ -397,6 +424,7 @@ fun addOption(controlId: String, data: String?, dataType: OptionDataType = Optio
 ## 一些常量
 
 ### 数据类型
+
 ```
 /**
  * 数据类型
@@ -448,6 +476,7 @@ enum class DataTypeEnum(val value: Int, val description: String, val controlType
 ```
 
 ### 日期过滤类型
+
 ```
 /**
  * 日期过滤类型
@@ -485,6 +514,7 @@ enum class DateRangeEnum(val value: Int, val enumChar: String, val description: 
 ```
 
 ### 回传状态码
+
 ```
 /**
  * 回传状态码
@@ -507,6 +537,7 @@ enum class ErrorCodeEnum(val code: Int, val description: String) {
 ```
 
 ### 筛选方式
+
 ```
 /**
  * 筛选方式
@@ -546,6 +577,7 @@ enum class FilterTypeEnum(val value: Int, val enumChar: String, val description:
 ```
 
 ### 附件的类型
+
 ```
 /**
  * 附件的类型
@@ -557,6 +589,7 @@ enum class MuliDataType private constructor(val type:Int) {
 ```
 
 ### 附件的操作类型
+
 ```
 /**
  * 附件的操作类型
@@ -568,6 +601,7 @@ enum class MuliEditType private constructor(val type:Int) {
 ```
 
 ### 选项卡的操作类型
+
 ```
 /**
  * 选项卡的操作类型
@@ -579,6 +613,7 @@ enum class OptionDataType private constructor(val type:Int) {
 ```
 
 ### 拼接方式
+
 ```
 /**
  * 拼接方式
