@@ -229,10 +229,10 @@ internal object ApiManager {
         //解析数据
         val result = JSON.parseObject(resultStr, object : TypeReference<BaseResult<Int>>() {})
 
-        return if (ErrorCodeEnum.fromCode(result.error_code) == ErrorCodeEnum.SUCCESS) {
+        return if (result!=null && ErrorCodeEnum.fromCode(result.error_code) == ErrorCodeEnum.SUCCESS) {
             result.data!!
         } else {
-            throw RuntimeException("获取应用数据请求失败，明道回传了失败的结果：${ErrorCodeEnum.fromCode(result.error_code).description}")
+            throw RuntimeException("写入行记录失败，${ErrorCodeEnum.fromCode(result.error_code).description}")
         }
     }
 
@@ -270,10 +270,10 @@ internal object ApiManager {
         //解析数据
         val result = JSON.parseObject(resultStr, object : TypeReference<BaseResult<String>>() {})
 
-        return if (ErrorCodeEnum.fromCode(result.error_code) == ErrorCodeEnum.SUCCESS) {
+        return if (result!=null && ErrorCodeEnum.fromCode(result.error_code) == ErrorCodeEnum.SUCCESS) {
             result.data!!
         } else {
-            throw RuntimeException("获取应用数据请求失败，明道回传了失败的结果：${ErrorCodeEnum.fromCode(result.error_code).description}")
+            throw RuntimeException("写入行记录失败，${ErrorCodeEnum.fromCode(result.error_code).description}")
         }
     }
 
