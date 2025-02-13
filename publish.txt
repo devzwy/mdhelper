@@ -1,0 +1,9 @@
+update version code in build.gradle.kts
+gradle ->ex publish task
+login https://s01.oss.sonatype.org/#stagingRepositories
+close and release
+wait day to see https://central.sonatype.com/artifact/io.github.devzwy/mdhelper last version
+
+if gpgkey check failed
+
+open the gpg keychain and click item of name json,choose send publickkey and sign and try again
