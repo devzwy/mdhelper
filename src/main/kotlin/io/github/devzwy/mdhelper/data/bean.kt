@@ -58,14 +58,13 @@ open class MdAppInfo {
     var color: String = ""
     var desc: String = ""
     var sections: List<MdSection> = arrayListOf()
-    var childSections: List<MdSection> = arrayListOf()
-
 }
 
 open class MdSection {
     var sectionId: String = ""
     var name: String = ""
     var items: List<MdSectionItem> = arrayListOf()
+    var childSections: List<MdSection> = arrayListOf()
 }
 
 open class MdSectionItem {
