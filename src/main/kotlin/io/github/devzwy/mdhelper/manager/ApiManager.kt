@@ -19,6 +19,9 @@ import java.lang.reflect.Type
  */
 internal object ApiManager {
 
+    //共有云的明道域名，apipath不包含/api前缀
+    private const val CLOUD_MD_WWW = "mingdao.com"
+
     //读取应用信息
     private const val URL_APP_INFO = "/api/v1/open/app/get"
 
@@ -229,7 +232,7 @@ internal object ApiManager {
         //解析数据
         val result = JSON.parseObject(resultStr, object : TypeReference<BaseResult<Int>>() {})
 
-        return if (result!=null && ErrorCodeEnum.fromCode(result.error_code) == ErrorCodeEnum.SUCCESS) {
+        return if (result != null && ErrorCodeEnum.fromCode(result.error_code) == ErrorCodeEnum.SUCCESS) {
             result.data!!
         } else {
             throw RuntimeException("写入行记录失败，${ErrorCodeEnum.fromCode(result.error_code).description}")
@@ -270,7 +273,7 @@ internal object ApiManager {
         //解析数据
         val result = JSON.parseObject(resultStr, object : TypeReference<BaseResult<String>>() {})
 
-        return if (result!=null && ErrorCodeEnum.fromCode(result.error_code) == ErrorCodeEnum.SUCCESS) {
+        return if (result != null && ErrorCodeEnum.fromCode(result.error_code) == ErrorCodeEnum.SUCCESS) {
             result.data!!
         } else {
             throw RuntimeException("写入行记录失败，${ErrorCodeEnum.fromCode(result.error_code).description}")
@@ -436,7 +439,15 @@ internal object ApiManager {
         }
     }
 
-    private fun getUrl(baseUrlKey: String?, path: String?) = "${ConfigManager.getBaseUrl(baseUrlKey)}${path}"
+    private fun getUrl(baseUrlKey: String?, path: String?): String {
+
+        val baseUrl = ConfigManager.getBaseUrl(baseUrlKey)
+        var reqPath = path ?: ""
+        if (baseUrl.contains(CLOUD_MD_WWW) && reqPath.startsWith("/api")) {
+            reqPath = reqPath.substring(3)
+        }
+        return "${baseUrl}${reqPath}"
+    }
 
     private fun getAppConfig(appConfigKey: String?) = ConfigManager.getAppConfig(appConfigKey)
 

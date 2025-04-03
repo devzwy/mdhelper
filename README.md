@@ -18,7 +18,7 @@
 implementation 'com.alibaba.fastjson2:fastjson2:2.0.47.android5'
 
 //明道云工具类
-implementation('io.github.devzwy:mdhelper:3.0.6') {
+implementation('io.github.devzwy:mdhelper:3.0.9') {
         exclude group: 'com.alibaba.fastjson2', module: 'fastjson2'
 }
 
@@ -32,14 +32,14 @@ implementation('io.github.devzwy:mdhelper:3.0.6') {
 <dependency>
   <groupId>io.github.devzwy</groupId>
   <artifactId>mdhelper</artifactId>
-  <version>3.0.8</version>
+  <version>3.0.9</version>
 </dependency>
 ```
 
 - Gradle
 
 ```
-implementation("io.github.devzwy:mdhelper:3.0.8")
+implementation("io.github.devzwy:mdhelper:3.0.9")
 implementation("com.alibaba.fastjson2:fastjson2:2.0.47")
 ```
 
