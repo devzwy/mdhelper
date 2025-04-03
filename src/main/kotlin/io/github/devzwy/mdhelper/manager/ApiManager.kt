@@ -444,7 +444,7 @@ internal object ApiManager {
         val baseUrl = ConfigManager.getBaseUrl(baseUrlKey)
         var reqPath = path ?: ""
         if (baseUrl.contains(CLOUD_MD_WWW) && reqPath.startsWith("/api")) {
-            reqPath = reqPath.substring(3)
+            reqPath = reqPath.substring(4)
         }
         return "${baseUrl}${reqPath}"
     }
