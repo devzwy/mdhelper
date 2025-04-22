@@ -4,7 +4,7 @@ import FilterTypeEnum
 import SpliceTypeEnum
 import io.github.devzwy.mdhelper.data.DataTypeEnum
 
-class MdFilterControl private constructor(val filters: List<HashMap<String, Any?>>) {
+class MdFilterControl private constructor(val filters: List<HashMap<String, Any?>>, val isGroupFilter: Boolean) {
     class Builder {
 
         private val list = arrayListOf<HashMap<String, Any?>>()
@@ -43,8 +43,11 @@ class MdFilterControl private constructor(val filters: List<HashMap<String, Any?
          */
         fun size() = list.size
 
-        fun build(): MdFilterControl {
-            return MdFilterControl(list)
+        /**
+         * [isGroupFilter] 群组筛选，对象，字表筛选时用true，为true时调用明道接口将使用groupFilter字段传递filter参数，否则用filter
+         */
+        fun build(isGroupFilter: Boolean = false): MdFilterControl {
+            return MdFilterControl(list, isGroupFilter)
         }
     }
 

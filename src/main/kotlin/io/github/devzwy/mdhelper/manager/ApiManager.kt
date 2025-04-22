@@ -115,7 +115,7 @@ internal object ApiManager {
 
         val url = getUrl(baseUrlKey, URL_FILTER_ROW)
 
-        val requestData = hashMapOf("appKey" to appKey, "sign" to sign, "worksheetId" to tableId, "filters" to filter.filters)
+        val requestData = hashMapOf("appKey" to appKey, "sign" to sign, "worksheetId" to tableId, (if (filter.isGroupFilter) "groupFilters" else "filters") to filter.filters)
 
         viewId?.let { requestData.put("viewId", it) }
         pageSize?.let { requestData.put("pageSize", it) }
