@@ -318,4 +318,17 @@ class MDHelper private constructor() {
      */
     fun getAllAppConfigs() = ConfigManager.getAllAppConfigs()
 
+//
+//    /**
+//     * 获取明道的全部应用列表
+//     */
+//    fun getAppList(baseUrl:String,groupNo:String,appKey:String,sKey:String){
+//
+//        //val groupNo = configList[0]
+//        //            val appKey = configList[1]
+//        //            val sKey = configList[2]
+//        //api.mingdao.com
+//        ///v1/open/app/getByProject
+//    }
+
 }

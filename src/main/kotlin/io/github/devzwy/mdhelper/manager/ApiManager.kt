@@ -46,6 +46,9 @@ internal object ApiManager {
     //过滤行
     private const val URL_FILTER_ROW = "/api/v2/open/worksheet/getFilterRows"
 
+    //查询明道的所有引用列表的时候用
+    private const val URL_GET_APP_LIST = "/v1/open/app/getByProject"
+
     /**
      * 获取列表 传入接收单个row的实体，一些公用的参数(明道基础字段)封装在了[io.github.devzwy.mdhelper.data.Row]类，如有需要可以自行继承
      * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常

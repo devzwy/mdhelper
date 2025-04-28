@@ -102,7 +102,7 @@ configure<SigningExtension> {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("com.alibaba.fastjson2:fastjson2:2.0.47")
+    implementation("com.alibaba.fastjson2:fastjson2:2.0.48")
 }
 
 tasks.test {

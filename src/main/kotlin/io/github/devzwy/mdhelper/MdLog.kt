@@ -12,7 +12,7 @@ import java.util.*
 internal object MdLog {
 
     // 是否打印日志
-    private var isLogEnabled: Boolean = true
+    private var isLogEnabled: Boolean = false
 
     /**
      * 开启日志打印

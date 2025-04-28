@@ -15,7 +15,7 @@
 > 解决工具类在安卓端解析数据时引起的闪退问题。引入下面的依赖即可，不需要再引入Java/Kotlin依赖部分。
 
 ```
-implementation 'com.alibaba.fastjson2:fastjson2:2.0.47.android5'
+implementation 'com.alibaba.fastjson2:fastjson2:2.0.48.android5'
 
 //明道云工具类
 implementation('io.github.devzwy:mdhelper:3.1.4') {
@@ -40,7 +40,7 @@ implementation('io.github.devzwy:mdhelper:3.1.4') {
 
 ```
 implementation("io.github.devzwy:mdhelper:3.1.4")
-implementation("com.alibaba.fastjson2:fastjson2:2.0.47")
+implementation("com.alibaba.fastjson2:fastjson2:2.0.48")
 ```
 
 ## Api列表
