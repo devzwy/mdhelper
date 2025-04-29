@@ -4,6 +4,8 @@ import com.alibaba.fastjson2.TypeReference
 import io.github.devzwy.mdhelper.MdLog
 import io.github.devzwy.mdhelper.data.MdAppInfo
 import io.github.devzwy.mdhelper.data.MdTableInfo
+import io.github.devzwy.mdhelper.utils.MDUtil.toJson
+import io.github.devzwy.mdhelper.utils.MdDataControl
 import io.github.devzwy.mdhelper.v2.utils.HttpUtils
 import io.github.devzwy.mdhelper.v2.utils.Signature
 import io.github.devzwy.mdhelper.v2.utils.Utils
@@ -33,6 +35,9 @@ class MdHelper {
 
     //存储app签名的临时数据，使用一次后不再通过明道云服务器api获取，直接从这里读取就可以
     private val appSignCache = ConcurrentHashMap<String, AppSignData>()
+
+
+    // ============================================= 对外开放的函数 =============================================
 
     /**
      * 初始化 调用时内部会自动拉取用户列表以确认配置的合法性，接口调用通过即为初始化完成
@@ -157,11 +162,11 @@ class MdHelper {
      * @param appId 应用ID，可通过[getAppList]返回或在明道应用页面查看ID
      * @param tableId 表ID
      */
-    fun getTableInfo(appId: String,tableId:String):MdTableInfo?{
+    fun getTableInfo(appId: String, tableId: String): MdTableInfo? {
         val appSignCache = appSignCache.get(appId) ?: getAppSignData(appId) ?: return null
         HttpUtils.doPost(
             url = getRequestUrl(this.config.tableInfoUrl),
-            requestMap = hashMapOf("sign" to appSignCache.sign, "appKey" to appSignCache.appKey,"worksheetId" to tableId),
+            requestMap = hashMapOf("sign" to appSignCache.sign, "appKey" to appSignCache.appKey, "worksheetId" to tableId),
         ).let { respStr ->
             Utils.parseApiResponse(respStr, object : TypeReference<ApiResponse<MdTableInfo>>() {}).let {
                 if (it != null) {
@@ -181,10 +186,105 @@ class MdHelper {
     }
 
     /**
+     * 插入单行记录
+     * @param appId 应用ID，可通过[getAppList]返回或在明道应用页面查看ID
+     * @param tableId 表ID
+     * [data] 写入的数据列，使用[MdDataControl.Builder]构造
+     * [triggerWorkflow] 是否触发工作流(默认: true)
+     * @return 写入成功后回传写入的行ID
+     */
+    fun insertRow(appId: String, tableId: String, data: MdDataControl, triggerWorkflow: Boolean = true): String? {
+
+        val appSignCache = appSignCache.get(appId) ?: getAppSignData(appId) ?: return null
+
+        HttpUtils.doPost(
+            url = getRequestUrl(this.config.addRowUrl),
+            requestMap = hashMapOf("appKey" to appSignCache.appKey, "sign" to appSignCache.sign, "worksheetId" to tableId, "controls" to data.controls, "triggerWorkflow" to triggerWorkflow),
+        ).let { respStr ->
+            Utils.parseApiResponse(respStr, object : TypeReference<ApiResponse<String>>() {}).let {
+                if (it != null) {
+                    if (it.error_code == 1) {
+                        return it.data
+                    } else {
+                        MdLog.error("写入 ${appId} 应用下的 ${tableId} 表中记录失败,${it.error_msg}")
+                    }
+                } else {
+                    MdLog.error("数据解析异常,${respStr} 无法解析为 ApiResponse<String>")
+                }
+            }
+        }
+        return null
+    }
+
+    /**
+     * 插入多行记录
+     * @param appId 应用ID，可通过[getAppList]返回或在明道应用页面查看ID
+     * @param tableId 表ID
+     * [dataList] 写入的数据列，使用[MdDataControl.Builder]构造
+     * [triggerWorkflow] 是否触发工作流(默认: true)
+     * @return 写入成功后回传写入的行ID
+     */
+    fun insertRows(appId: String, tableId: String, dataList: List<MdDataControl>, triggerWorkflow: Boolean = true): Int {
+
+        val appSignCache = appSignCache.get(appId) ?: getAppSignData(appId) ?: return 0
+
+        HttpUtils.doPost(
+            url = getRequestUrl(this.config.addRowsUrl),
+            requestMap = hashMapOf("appKey" to appSignCache.appKey, "sign" to appSignCache.sign, "worksheetId" to tableId, "rows" to dataList.flatMap { arrayListOf(it.controls) }, "triggerWorkflow" to triggerWorkflow),
+        ).let { respStr ->
+            Utils.parseApiResponse(respStr, object : TypeReference<ApiResponse<Int>>() {}).let {
+                if (it != null) {
+                    if (it.error_code == 1) {
+                        return it.data!!
+                    } else {
+                        MdLog.error("写入 ${appId} 应用下的 ${tableId} 表中多条记录失败,${it.error_msg}")
+                    }
+                } else {
+                    MdLog.error("数据解析异常,${respStr} 无法解析为 ApiResponse<Int>")
+                }
+            }
+        }
+        return 0
+    }
+
+    /**
+     * 更新行记录
+     * @param appId 应用ID，可通过[getAppList]返回或在明道应用页面查看ID
+     * @param tableId 表ID
+     * [data] 写入的数据列，使用[MdDataControl.Builder]构造
+     * [triggerWorkflow] 是否触发工作流(默认: true)
+     * @return 写入成功后回传写入的行ID
+     */
+    fun updateRow(appId: String, tableId: String,rowId:String, data: MdDataControl, triggerWorkflow: Boolean = true): Boolean {
+
+        val appSignCache = appSignCache.get(appId) ?: getAppSignData(appId) ?: return false
+
+        HttpUtils.doPost(
+            url = getRequestUrl(this.config.editRowUrl),
+            requestMap = hashMapOf("appKey" to appSignCache.appKey, "sign" to appSignCache.sign, "rowId" to rowId, "worksheetId" to tableId, "controls" to data.controls, "triggerWorkflow" to triggerWorkflow),
+        ).let { respStr ->
+            Utils.parseApiResponse(respStr, object : TypeReference<ApiResponse<Boolean>>() {}).let {
+                if (it != null) {
+                    if (it.error_code == 1) {
+                        return it.data!!
+                    } else {
+                        MdLog.error("写入 ${appId} 应用下的 ${tableId} 表中记录失败,${it.error_msg}")
+                    }
+                } else {
+                    MdLog.error("数据解析异常,${respStr} 无法解析为 ApiResponse<Boolean>")
+                }
+            }
+        }
+        return false
+    }
+
+    // ============================================= 私有函数 =============================================
+
+    /**
      * 返回请求的url
      */
     private fun getRequestUrl(path: String): String {
-        val reqPath = if (this.config.removePathUrlApiHead && path.startsWith("/api") && path!=this.config.appListUrl && path!=this.config.appAuthUrl) {
+        val reqPath = if (this.config.removePathUrlApiHead && path.startsWith("/api") && path != this.config.appListUrl && path != this.config.appAuthUrl) {
             path.substring(4, path.length)
         } else path
         return String.format("%s%s", this.baseUrl, reqPath)
@@ -195,18 +295,75 @@ class MdHelper {
 
 
 fun main() {
+
+
+    fun log(msg: String) {
+        println(msg)
+    }
+
+    val testAppId = "dc0e2835-3312-47bd-9a0c-36ad2f1c72c3"
+
+    //共有云配置实体
     val cloudMDHelper = MdHelper().also {
         it.init("https://api.mingdao.com", "9e079fb4-ff41-4ad1-8ed0-fff44e1a1844", "fd1ee46bea776198", "36a15cf2bb44be96d7fb8785f76984", config = Config().also {
-            it.debugEnabled = true
+            it.debugEnabled = false
         })
     }
 
+    log("示例初始化完成，开始获取应用列表 ...")
+
+    val appList = cloudMDHelper.getAppList()
+
+    val appId = appList.find { it.appId == testAppId }!!.appId
+
+    log("用第一个应用ID ${appId} 取签名信息 ...")
+
+    val appSignData = cloudMDHelper.getAppSignData(appId)
+
+    log("签名获取成功,${appSignData!!.toJson()} ,开始获取应用 ${appId} 详情 ...")
+
+    val appInfo = cloudMDHelper.getAppInfo(appId)
+
+    val tableId = appInfo!!.sections[0].items[0].id
+
+    log("用第一个表ID ${tableId} 取表结构信息 ...")
+
+    val tableInfo = cloudMDHelper.getTableInfo(appId, tableId)
+
+    log("表结构获取成功,${tableInfo!!.toJson()},测试单条测试数据写入 ...")
+
+    val rowId = cloudMDHelper.insertRow(
+        appId, tableId, MdDataControl.Builder()
+            .addControl("67c175caa47f709d9deb12d2", "测试名称")
+            .addControl("67c175caa47f709d9deb12d3", "测试描述")
+            .build()
+    )!!
+
+    log("写入成功,${rowId},测试多条数据写入 ...")
+
+    val rowIdCount = cloudMDHelper.insertRows(
+        appId, tableId, arrayListOf(
+            MdDataControl.Builder()
+                .addControl("67c175caa47f709d9deb12d2", "测试名称2")
+                .addControl("67c175caa47f709d9deb12d3", "测试描述2")
+                .build(),
+            MdDataControl.Builder()
+                .addControl("67c175caa47f709d9deb12d2", "测试名称3")
+                .addControl("67c175caa47f709d9deb12d3", "测试描述3")
+                .build(),
+
+            )
+    )
+    log("写入成功,${rowIdCount}数据已写入,测试编辑行记录 ...")
 
 
-//    val a = cloudMDHelper.getAppList()
-//    val b = cloudMDHelper.getAppSignData("5ebe8980-875b-4ebf-ab42-57025c1ca180")
-//    val c = cloudMDHelper.getAppList(true)
-    val d = cloudMDHelper.getAppInfo("5ebe8980-875b-4ebf-ab42-57025c1ca180")
-    val e = cloudMDHelper.getTableInfo("5ebe8980-875b-4ebf-ab42-57025c1ca180","650bed60fb532be3de74886d")
+    val isSucc = cloudMDHelper.updateRow(
+        appId, tableId,rowId, MdDataControl.Builder()
+            .addControl("67c175caa47f709d9deb12d2", "测试名称")
+            .addControl("67c175caa47f709d9deb12d3", "测试描述")
+            .build()
+    )
+    log("编辑完成 ${isSucc}")
+
     println()
 }

@@ -27,7 +27,7 @@ object HttpUtils {
         return httpRequest(buildUrlWithParams(url, requestMap).toString(), "GET", null)
     }
 
-    fun doPost(url: String, requestMap: Map<String, String?> = hashMapOf()): String {
+    fun doPost(url: String, requestMap: Map<String, Any?> = hashMapOf()): String {
         return httpRequest(url, "POST", requestMap.toJson())
     }
 
