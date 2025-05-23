@@ -154,7 +154,34 @@ class MDHelper private constructor() {
      */
     fun updateRow(baseUrlKey: String? = null, appKey: String, sign: String, tableId: String, rowId: String, data: MdDataControl, triggerWorkflow: Boolean = true) = ApiManager.updateRow(baseUrlKey, appKey, sign, tableId, rowId, data,triggerWorkflow)
 
-        /**
+    /**
+     * 编辑多行记录
+     * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
+     * [appConfigKey] 应用的配置Key，为空时取第一个添加的应用配置，如果未添加过应用配置则抛出异常
+     * [tableId] 操作的表ID，可以为别名或者明道生成的ID
+     * [rowIds] 行记录ID列表
+     * [data] 更新的数据列，使用[MdDataControl.Builder]构造
+     * [triggerWorkflow] 是否触发工作流(默认: true)
+     * @return 编辑成功返回true，否则返回false
+     */
+    fun updateRows(baseUrlKey: String? = null, appConfigKey: String? = null, tableId: String, rowIds: List<String>, data: MdDataControl, triggerWorkflow: Boolean = true) =
+        ApiManager.updateRows(baseUrlKey, appConfigKey, tableId, rowIds, data, triggerWorkflow)
+
+
+    /**
+     * 编辑多行记录
+     * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
+     * [appKey] 应用的appkey
+     * [sign] 应用的签名
+     * [tableId] 操作的表ID，可以为别名或者明道生成的ID
+     * [rowIds] 行记录ID列表
+     * [data] 更新的数据列，使用[MdDataControl.Builder]构造
+     * [triggerWorkflow] 是否触发工作流(默认: true)
+     * @return 编辑成功返回true，否则返回false
+     */
+    fun updateRows(baseUrlKey: String? = null, appKey: String, sign: String, tableId: String, rowIds: List<String>, data: MdDataControl, triggerWorkflow: Boolean = true) = ApiManager.updateRows(baseUrlKey, appKey, sign, tableId, rowIds, data,triggerWorkflow)
+
+    /**
      * 获取行记录详情
      * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
      * [appConfigKey] 应用的配置Key，为空时取第一个添加的应用配置，如果未添加过应用配置则抛出异常

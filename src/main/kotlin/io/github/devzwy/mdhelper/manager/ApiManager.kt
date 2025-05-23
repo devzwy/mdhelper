@@ -37,6 +37,9 @@ internal object ApiManager {
     //编辑行记录
     private const val URL_EDIT_ROW = "/api/v2/open/worksheet/editRow"
 
+    //编辑多行记录
+    private const val URL_EDIT_ROWS = "/api/v2/open/worksheet/editRows"
+
     //获取行记录详情
     private const val URL_GET_ROW = "/api/v2/open/worksheet/getRowByIdPost"
 
@@ -298,7 +301,7 @@ internal object ApiManager {
 
         val appConfig = getAppConfig(appConfigKey)
 
-        return updateRow(baseUrlKey, appConfig.appKey, appConfig.sign, tableId, rowId, data)
+        return updateRow(baseUrlKey, appConfig.appKey, appConfig.sign, tableId, rowId, data,triggerWorkflow)
     }
 
 
@@ -330,6 +333,55 @@ internal object ApiManager {
             throw RuntimeException("编辑行记录请求失败，明道回传了失败的结果：${ErrorCodeEnum.fromCode(result.error_code).description}")
         }
     }
+
+    /**
+     * 编辑多行记录
+     * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
+     * [appConfigKey] 应用的配置Key，为空时取第一个添加的应用配置，如果未添加过应用配置则抛出异常
+     * [tableId] 操作的表ID，可以为别名或者明道生成的ID
+     * [rowId] 行记录ID
+     * [data] 更新的数据列，使用[MdDataControl.Builder]构造
+     * [triggerWorkflow] 是否触发工作流(默认: true)
+     * @return 编辑成功返回true，否则返回false
+     */
+    fun updateRows(baseUrlKey: String? = null, appConfigKey: String? = null, tableId: String, rowIds: List<String>, data: MdDataControl, triggerWorkflow: Boolean = true): Boolean {
+
+        val appConfig = getAppConfig(appConfigKey)
+
+        return updateRows(baseUrlKey, appConfig.appKey, appConfig.sign, tableId, rowIds, data,triggerWorkflow)
+    }
+
+
+    /**
+     * 编辑多行记录
+     * [baseUrlKey] baseUrl配置的Key，为空时取第一个添加的BaseUrl，如果未添加过BaseUrl时抛出异常
+     * [appKey] 应用的appkey
+     * [sign] 应用的签名
+     * [tableId] 操作的表ID，可以为别名或者明道生成的ID
+     * [rowId] 行记录ID
+     * [data] 更新的数据列，使用[MdDataControl.Builder]构造
+     * [triggerWorkflow] 是否触发工作流(默认: true)
+     * @return 编辑成功返回true，否则返回false
+     */
+    fun updateRows(baseUrlKey: String? = null, appKey: String, sign: String, tableId: String, rowIds: List<String>, data: MdDataControl, triggerWorkflow: Boolean = true): Boolean {
+
+        val url = getUrl(baseUrlKey, URL_EDIT_ROWS)
+
+        val requestData = hashMapOf(
+            "appKey" to appKey, "sign" to sign, "worksheetId" to tableId, "rowIds" to rowIds, "controls" to data.controls, "triggerWorkflow" to triggerWorkflow
+        )
+        val resultStr = HttpClientUtil.post(url, requestData.toJson())
+        //解析数据
+        val result = JSON.parseObject(resultStr, object : TypeReference<BaseResult<Boolean>>() {})
+
+        return if (ErrorCodeEnum.fromCode(result.error_code) == ErrorCodeEnum.SUCCESS) {
+            result.data!!
+        } else {
+            throw RuntimeException("编辑多行记录请求失败，明道回传了失败的结果：${ErrorCodeEnum.fromCode(result.error_code).description}")
+        }
+    }
+
+
 
 
     /**
