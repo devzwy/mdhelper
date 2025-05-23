@@ -344,7 +344,7 @@ internal object ApiManager {
      * [triggerWorkflow] 是否触发工作流(默认: true)
      * @return 编辑成功返回true，否则返回false
      */
-    fun updateRows(baseUrlKey: String? = null, appConfigKey: String? = null, tableId: String, rowIds: List<String>, data: MdDataControl, triggerWorkflow: Boolean = true): Boolean {
+    fun updateRows(baseUrlKey: String? = null, appConfigKey: String? = null, tableId: String, rowIds: List<String>, data: MdDataControl, triggerWorkflow: Boolean = true): Int {
 
         val appConfig = getAppConfig(appConfigKey)
 
@@ -363,7 +363,7 @@ internal object ApiManager {
      * [triggerWorkflow] 是否触发工作流(默认: true)
      * @return 编辑成功返回true，否则返回false
      */
-    fun updateRows(baseUrlKey: String? = null, appKey: String, sign: String, tableId: String, rowIds: List<String>, data: MdDataControl, triggerWorkflow: Boolean = true): Boolean {
+    fun updateRows(baseUrlKey: String? = null, appKey: String, sign: String, tableId: String, rowIds: List<String>, data: MdDataControl, triggerWorkflow: Boolean = true): Int {
 
         val url = getUrl(baseUrlKey, URL_EDIT_ROWS)
 
@@ -372,7 +372,7 @@ internal object ApiManager {
         )
         val resultStr = HttpClientUtil.post(url, requestData.toJson())
         //解析数据
-        val result = JSON.parseObject(resultStr, object : TypeReference<BaseResult<Boolean>>() {})
+        val result = JSON.parseObject(resultStr, object : TypeReference<BaseResult<Int>>() {})
 
         return if (ErrorCodeEnum.fromCode(result.error_code) == ErrorCodeEnum.SUCCESS) {
             result.data!!
